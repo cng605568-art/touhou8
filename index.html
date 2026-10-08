@@ -248,6 +248,32 @@ code{color:#d6c8ff}
 }
 
 
+/* Always-visible fullscreen launcher. It stays above the game/touch layer and is
+   deliberately independent of the lower utility row so it cannot disappear below
+   the viewport on iPad/iPhone. */
+#fullscreen-float {
+  position: fixed;
+  top: calc(env(safe-area-inset-top,0px) + 2.5vmin);
+  left: calc(env(safe-area-inset-left,0px) + 2.5vmin);
+  z-index: 1000000;
+  min-width: 76px;
+  min-height: 54px;
+  padding: 10px 16px;
+  border: 2px solid #efe6d2;
+  border-radius: 16px;
+  background: rgba(18,16,24,.92);
+  color: #efe6d2;
+  font: 800 16px/1 system-ui, sans-serif;
+  box-shadow: 0 4px 18px rgba(0,0,0,.45);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+#fullscreen-float:active { transform: scale(.96); }
+html:fullscreen #fullscreen-float,
+html:-webkit-full-screen #fullscreen-float {
+  display: block;
+}
+
 /* Fullscreen presentation: turn the whole browser surface into the native
    TH08-style 4:3 game view. The HTML shell goes fullscreen, while the game
    canvas remains a strict 640x480 aspect ratio and scales to the largest
@@ -332,7 +358,7 @@ html:-webkit-full-screen #touch-overlay-ref {
   inset:0;
   z-index:999999;
 }
-</style></head><body><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots can be stored in this browser and restored on reload. Use <strong>Save now</strong> before closing the tab. Clearing this site's browser data removes them. The game's running state itself is not a mid-stage save state.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><div class=account-panel>
+</style></head><body><button type="button" id="fullscreen-float" aria-label="Enter fullscreen">⛶ Fullscreen</button><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots can be stored in this browser and restored on reload. Use <strong>Save now</strong> before closing the tab. Clearing this site's browser data removes them. The game's running state itself is not a mid-stage save state.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><div class=account-panel>
   <div class=account-row>
     <strong>Cloud save</strong>
     <span class=account-name id=account-name>Not signed in</span>
@@ -666,31 +692,45 @@ window.addEventListener("pagehide",()=>{
 });
 
 const fullscreenButton=document.querySelector("#fullscreen");
+const fullscreenFloat=document.querySelector("#fullscreen-float");
+function isFullscreen(){ return !!(document.fullscreenElement || document.webkitFullscreenElement); }
 function refreshFullscreenButton(){
-  const active=!!document.fullscreenElement;
-  fullscreenButton.textContent=active?"Exit fullscreen":"Fullscreen";
-  fullscreenButton.setAttribute("aria-pressed",String(active));
+  const active=isFullscreen();
+  if(fullscreenButton){
+    fullscreenButton.textContent=active?"Exit fullscreen":"Fullscreen";
+    fullscreenButton.setAttribute("aria-pressed",String(active));
+  }
+  if(fullscreenFloat){
+    fullscreenFloat.textContent=active?"⛶ Exit":"⛶ Fullscreen";
+    fullscreenFloat.setAttribute("aria-pressed",String(active));
+  }
 }
-fullscreenButton.addEventListener("click",async()=>{
+async function toggleFullscreen(){
   try{
-    if(!document.fullscreenElement){
+    if(!isFullscreen()){
       const root=document.documentElement;
-      if(!root.requestFullscreen) throw new Error("This browser does not expose the Fullscreen API.");
-      try{
-        await root.requestFullscreen({navigationUI:"hide"});
-      }catch{
-        await root.requestFullscreen();
+      if(!root.requestFullscreen && !root.webkitRequestFullscreen) throw new Error("This browser does not expose the Fullscreen API.");
+      if(root.requestFullscreen){
+        try{ await root.requestFullscreen({navigationUI:"hide"}); }
+        catch{ await root.requestFullscreen(); }
+      }else{
+        root.webkitRequestFullscreen();
       }
     }else if(document.exitFullscreen){
       await document.exitFullscreen();
+    }else if(document.webkitExitFullscreen){
+      document.webkitExitFullscreen();
     }
   }catch(error){
     appendLog("Fullscreen unavailable: "+error.message);
   }
   refreshFullscreenButton();
-});
+}
+fullscreenButton?.addEventListener("click",toggleFullscreen);
+fullscreenFloat?.addEventListener("click",toggleFullscreen);
 document.addEventListener("fullscreenchange",refreshFullscreenButton);
-if(!document.fullscreenEnabled && !document.documentElement.requestFullscreen){
+document.addEventListener("webkitfullscreenchange",refreshFullscreenButton);
+if(fullscreenButton && !document.fullscreenEnabled && !document.documentElement.requestFullscreen && !document.documentElement.webkitRequestFullscreen){
   fullscreenButton.hidden=true;
 }
 refreshFullscreenButton();
