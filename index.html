@@ -56,6 +56,13 @@ code{color:#d6c8ff}
 .utility{grid-column:2;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
 .utility button{padding:.6rem .9rem;background:#201e2e;color:#ddd6ef;font-size:.82rem}
 #save-now{background:#39324f;color:#efe9ff;font-weight:900}
+.account-panel{margin:1rem 0 0;padding:.85rem;border-radius:.7rem;background:#0c0d14;border:1px solid #2d2940}
+.account-row{display:flex;gap:.6rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.account-name{font-size:.82rem;color:#d9d2e9;overflow:hidden;text-overflow:ellipsis}
+#google-login{width:100%;padding:.75rem 1rem;background:#fff;color:#202124;border:1px solid #dadce0;font-weight:800}
+#google-logout{padding:.5rem .75rem;background:#28243a;color:#ddd6ef;font-size:.78rem}
+#cloud-sync{padding:.5rem .75rem;background:#4b3c78;color:#fff;font-size:.78rem}
+.cloud-status{margin:.55rem 0 0;font-size:.76rem;color:#9f97b4}
 .orientation-hint{display:none}
 @media (max-width:1060px){
   main{grid-template-columns:1fr}
@@ -89,7 +96,19 @@ code{color:#d6c8ff}
 @media (prefers-reduced-motion:reduce){
   .joystick-knob,.dpad button,.actions button,.utility button{transition:none}
 }
-</style></head><body><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots can be stored in this browser and restored on reload. Use <strong>Save now</strong> before closing the tab. Clearing this site's browser data removes them. The game's running state itself is not a mid-stage save state.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><label>Game data <input accept=.dat,application/octet-stream id=game-data type=file></label> <label>Background music data <input accept=.dat,application/octet-stream id=bgm-data type=file></label> <button disabled id=start>Start TH08</button><div aria-live=polite id=status role=status>Loading the WebAssembly runtime…</div><pre aria-label="Runtime log"id=log></pre></section><section class=game>
+</style></head><body><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots can be stored in this browser and restored on reload. Use <strong>Save now</strong> before closing the tab. Clearing this site's browser data removes them. The game's running state itself is not a mid-stage save state.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><div class=account-panel>
+  <div class=account-row>
+    <strong>Cloud save</strong>
+    <span class=account-name id=account-name>Not signed in</span>
+  </div>
+  <button type=button id=google-login>Continue with Google</button>
+  <div class=account-row>
+    <button type=button hidden id=google-logout>Sign out</button>
+    <button type=button disabled id=cloud-sync>Sync cloud save</button>
+  </div>
+  <div class=cloud-status id=cloud-status>Sign in to keep your save data synced between devices.</div>
+</div>
+<label>Game data <input accept=.dat,application/octet-stream id=game-data type=file></label> <label>Background music data <input accept=.dat,application/octet-stream id=bgm-data type=file></label> <button disabled id=start>Start TH08</button><div aria-live=polite id=status role=status>Loading the WebAssembly runtime…</div><pre aria-label="Runtime log"id=log></pre></section><section class=game>
   <div class="game-shell" aria-label="Touhou mobile game controls">
     <div class="canvas-wrap">
       <canvas height=480 id=canvas oncontextmenu=event.preventDefault() tabindex=0 width=640></canvas>
@@ -122,7 +141,9 @@ code{color:#d6c8ff}
       </div>
     </div>
   </div>
-</section></main><script>const gameInput=document.querySelector("#game-data"),bgmInput=document.querySelector("#bgm-data"),startButton=document.querySelector("#start"),statusElement=document.querySelector("#status"),logElement=document.querySelector("#log"),canvas=document.querySelector("#canvas"),displayCanvas=document.querySelector("#display-canvas"),gameSection=document.querySelector(".game"),useBitmapPresentation=navigator.userAgent.includes("Firefox/");let runtimeReady=!1,started=!1,gameFileSystemReady=!1;const persistentFiles=["th08.cfg","score.dat","score.txt"],persistentDirectories=["replay","backup","snapshot"],retailArchiveNames=new Set(["th08.dat","thbgm.dat"]);function appendLog(e){logElement.textContent+=`${e}\n`,logElement.scrollTop=logElement.scrollHeight}function selectedFiles(){return[gameInput.files[0],bgmInput.files[0]]}function selectionIsValid(){const[e,t]=selectedFiles();return"th08.dat"===e?.name.toLowerCase()&&"thbgm.dat"===t?.name.toLowerCase()}function updateStartState(){if(startButton.disabled=started||!runtimeReady||!crossOriginIsolated||!selectionIsValid(),crossOriginIsolated){if(!selectionIsValid()&&runtimeReady)statusElement.textContent="Select files named th08.dat and thbgm.dat to continue.";else if(!started&&runtimeReady){const[e,t]=selectedFiles();statusElement.textContent=`Ready: ${e.name} (${e.size.toLocaleString()} bytes), ${t.name} (${t.size.toLocaleString()} bytes).`}}else statusElement.textContent="This build requires cross-origin isolation. Serve it with the repository development server or equivalent COOP/COEP headers."}function ensureDirectory(e){try{Module.FS.mkdir(e)}catch(t){const a=Module.FS.stat(e).mode;if(!Module.FS.isDir(a))throw t}}function syncFileSystem(e){return new Promise(((t,a)=>{Module.FS.syncfs(e,(e=>e?a(e):t()))}))}function removeRetailArchivesFromSaveTree(e){let t=!1;for(const a of Module.FS.readdir(e)){if("."===a||".."===a)continue;const n=`${e}/${a}`,s=Module.FS.lstat(n).mode;retailArchiveNames.has(a.toLowerCase())?(Module.FS.isDir(s)?(removeTree(n),Module.FS.rmdir(n)):Module.FS.unlink(n),t=!0):Module.FS.isDir(s)&&(t=removeRetailArchivesFromSaveTree(n)||t)}return t}function removeTree(e){for(const t of Module.FS.readdir(e)){if("."===t||".."===t)continue;const a=`${e}/${t}`,n=Module.FS.lstat(a).mode;Module.FS.isDir(n)?(removeTree(a),Module.FS.rmdir(a)):Module.FS.unlink(a)}}function addSaveLink(e){const t=`/game/${e}`,a=`/save/${e}`;Module.FS.symlink(a,t)}function installBitmapPresentation(){if(!useBitmapPresentation)return;const e=displayCanvas.getContext("bitmaprenderer");if(!e)throw new Error("Firefox bitmap presentation is unavailable.");gameSection.classList.add("bitmap-presentation"),canvas.setAttribute("aria-hidden","true"),displayCanvas.removeAttribute("aria-hidden");for(const t of PThread.unusedWorkers){const a=t.onmessage;t.onmessage=n=>{const s=n.data?.th08WebFrame;s?e.transferFromImageBitmap(s):a.call(t,n)}}Module.th08BitmapPresentation=!0}function focusGameCanvas(){(useBitmapPresentation?displayCanvas:canvas).focus()}async function prepareGameFileSystem(){if(gameFileSystemReady)return;ensureDirectory("/game"),ensureDirectory("/save");for(const e of persistentDirectories)ensureDirectory(`/game/${e}`);let e=!1;const t=["/save",...persistentDirectories.map((e=>`/game/${e}`))];try{for(const e of t)Module.FS.mount(Module.IDBFS,{autoPersist:!0},e);await syncFileSystem(!0),e=!0}catch(e){console.error("Browser save persistence is unavailable; saves are session-only.",e),appendLog("th08-web: browser save persistence unavailable; using volatile saves")}t.reduce(((e,t)=>removeRetailArchivesFromSaveTree(t)||e),!1)&&appendLog("th08-web: removed forbidden retail archive entries from browser save storage");for(const e of persistentFiles)addSaveLink(e);Module.th08SavePersistence={available:e,mounts:t,files:[...persistentFiles],directories:[...persistentDirectories]},gameFileSystemReady=!0}gameInput.addEventListener("change",updateStartState),bgmInput.addEventListener("change",updateStartState);const gameKeyCodes=new Map([["ArrowUp",38],["ArrowDown",40],["ArrowLeft",37],["ArrowRight",39],["Numpad1",97],["Numpad2",98],["Numpad3",99],["Numpad4",100],["Numpad6",102],["Numpad7",103],["Numpad8",104],["Numpad9",105],["Home",36],["KeyP",80],["KeyD",68],["KeyZ",90],["KeyX",88],["ShiftLeft",16],["ShiftRight",16],["Escape",27],["ControlLeft",17],["ControlRight",17],["KeyQ",81],["KeyS",83],["KeyR",82],["Enter",13],["NumpadEnter",13]]);function updateGameKey(e,t){const a=gameKeyCodes.get(e.code);started&&void 0!==a&&(e.preventDefault(),Module._th08_web_set_key_state(a,t?1:0))}window.addEventListener("keydown",(e=>updateGameKey(e,!0))),window.addEventListener("keyup",(e=>updateGameKey(e,!1))),window.addEventListener("blur",(()=>{runtimeReady&&Module._th08_web_clear_key_state()})),canvas.addEventListener("pointerdown",focusGameCanvas),displayCanvas.addEventListener("pointerdown",focusGameCanvas);var Module={noInitialRun:!0,canvas:canvas,print:appendLog,printErr:appendLog,setStatus:e=>{e&&(statusElement.textContent=e)},onAbort:e=>{statusElement.textContent=`The game aborted: ${e}`},onRuntimeInitialized:()=>{installBitmapPresentation(),runtimeReady=!0,updateStartState()}};startButton.addEventListener("click",(async()=>{if(!selectionIsValid()||started)return;const[e,t]=selectedFiles();started=!0,updateStartState();try{statusElement.textContent="Loading local retail data and restoring browser-local saves…";const[a]=await Promise.all([e.arrayBuffer(),prepareGameFileSystem()]),n=new Uint8Array(a),s=Module._th08_web_allocate_game_data(n.byteLength);if(!s)throw new Error("Unable to allocate session memory for th08.dat.");Module.HEAPU8.set(n,s),Module.th08RetailFiles=[e,t],Module._th08_web_set_retail_file_sizes(e.size,t.size),Module.FS.chdir("/game"),Module.FS.writeFile("th08.dat",new Uint8Array(0)),Module.FS.writeFile("thbgm.dat",new Uint8Array(0)),focusGameCanvas(),statusElement.textContent="Starting TH08 from local retail data…",await saveBrowserData("Browser save storage is ready."),Module.callMain([])}catch(e){console.error(e),statusElement.textContent=`Unable to start TH08: ${e.message}`,started=!1,updateStartState()}}))</script><script>
+</section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>const SUPABASE_URL="https://zpdenyjvnmmkvlydrnes.supabase.co",SUPABASE_PUBLISHABLE_KEY="sb_publishable_oXlGiGQtCxv8wAza4ifU3Q_jQGJl0dx",supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}});const googleLoginButton=document.querySelector("#google-login"),googleLogoutButton=document.querySelector("#google-logout"),cloudSyncButton=document.querySelector("#cloud-sync"),accountName=document.querySelector("#account-name"),cloudStatus=document.querySelector("#cloud-status");
+const gameInput=document.querySelector("#game-data"),bgmInput=document.querySelector("#bgm-data"),startButton=document.querySelector("#start"),statusElement=document.querySelector("#status"),logElement=document.querySelector("#log"),canvas=document.querySelector("#canvas"),displayCanvas=document.querySelector("#display-canvas"),gameSection=document.querySelector(".game"),useBitmapPresentation=navigator.userAgent.includes("Firefox/");let runtimeReady=!1,started=!1,gameFileSystemReady=!1;const persistentFiles=["th08.cfg","score.dat","score.txt"],persistentDirectories=["replay","backup","snapshot"],retailArchiveNames=new Set(["th08.dat","thbgm.dat"]);function appendLog(e){logElement.textContent+=`${e}\n`,logElement.scrollTop=logElement.scrollHeight}function selectedFiles(){return[gameInput.files[0],bgmInput.files[0]]}function selectionIsValid(){const[e,t]=selectedFiles();return"th08.dat"===e?.name.toLowerCase()&&"thbgm.dat"===t?.name.toLowerCase()}function updateStartState(){if(startButton.disabled=started||!runtimeReady||!crossOriginIsolated||!selectionIsValid(),crossOriginIsolated){if(!selectionIsValid()&&runtimeReady)statusElement.textContent="Select files named th08.dat and thbgm.dat to continue.";else if(!started&&runtimeReady){const[e,t]=selectedFiles();statusElement.textContent=`Ready: ${e.name} (${e.size.toLocaleString()} bytes), ${t.name} (${t.size.toLocaleString()} bytes).`}}else statusElement.textContent="This build requires cross-origin isolation. Serve it with the repository development server or equivalent COOP/COEP headers."}function ensureDirectory(e){try{Module.FS.mkdir(e)}catch(t){const a=Module.FS.stat(e).mode;if(!Module.FS.isDir(a))throw t}}function syncFileSystem(e){return new Promise(((t,a)=>{Module.FS.syncfs(e,(e=>e?a(e):t()))}))}function removeRetailArchivesFromSaveTree(e){let t=!1;for(const a of Module.FS.readdir(e)){if("."===a||".."===a)continue;const n=`${e}/${a}`,s=Module.FS.lstat(n).mode;retailArchiveNames.has(a.toLowerCase())?(Module.FS.isDir(s)?(removeTree(n),Module.FS.rmdir(n)):Module.FS.unlink(n),t=!0):Module.FS.isDir(s)&&(t=removeRetailArchivesFromSaveTree(n)||t)}return t}function removeTree(e){for(const t of Module.FS.readdir(e)){if("."===t||".."===t)continue;const a=`${e}/${t}`,n=Module.FS.lstat(a).mode;Module.FS.isDir(n)?(removeTree(a),Module.FS.rmdir(a)):Module.FS.unlink(a)}}function addSaveLink(e){const t=`/game/${e}`,a=`/save/${e}`;Module.FS.symlink(a,t)}function installBitmapPresentation(){if(!useBitmapPresentation)return;const e=displayCanvas.getContext("bitmaprenderer");if(!e)throw new Error("Firefox bitmap presentation is unavailable.");gameSection.classList.add("bitmap-presentation"),canvas.setAttribute("aria-hidden","true"),displayCanvas.removeAttribute("aria-hidden");for(const t of PThread.unusedWorkers){const a=t.onmessage;t.onmessage=n=>{const s=n.data?.th08WebFrame;s?e.transferFromImageBitmap(s):a.call(t,n)}}Module.th08BitmapPresentation=!0}function focusGameCanvas(){(useBitmapPresentation?displayCanvas:canvas).focus()}async function prepareGameFileSystem(){if(gameFileSystemReady)return;ensureDirectory("/game"),ensureDirectory("/save");for(const e of persistentDirectories)ensureDirectory(`/game/${e}`);let e=!1;const t=["/save",...persistentDirectories.map((e=>`/game/${e}`))];try{for(const e of t)Module.FS.mount(Module.IDBFS,{autoPersist:!0},e);await syncFileSystem(!0),e=!0}catch(e){console.error("Browser save persistence is unavailable; saves are session-only.",e),appendLog("th08-web: browser save persistence unavailable; using volatile saves")}t.reduce(((e,t)=>removeRetailArchivesFromSaveTree(t)||e),!1)&&appendLog("th08-web: removed forbidden retail archive entries from browser save storage");for(const e of persistentFiles)addSaveLink(e);Module.th08SavePersistence={available:e,mounts:t,files:[...persistentFiles],directories:[...persistentDirectories]},gameFileSystemReady=!0}gameInput.addEventListener("change",updateStartState),bgmInput.addEventListener("change",updateStartState);const gameKeyCodes=new Map([["ArrowUp",38],["ArrowDown",40],["ArrowLeft",37],["ArrowRight",39],["Numpad1",97],["Numpad2",98],["Numpad3",99],["Numpad4",100],["Numpad6",102],["Numpad7",103],["Numpad8",104],["Numpad9",105],["Home",36],["KeyP",80],["KeyD",68],["KeyZ",90],["KeyX",88],["ShiftLeft",16],["ShiftRight",16],["Escape",27],["ControlLeft",17],["ControlRight",17],["KeyQ",81],["KeyS",83],["KeyR",82],["Enter",13],["NumpadEnter",13]]);function updateGameKey(e,t){const a=gameKeyCodes.get(e.code);started&&void 0!==a&&(e.preventDefault(),Module._th08_web_set_key_state(a,t?1:0))}window.addEventListener("keydown",(e=>updateGameKey(e,!0))),window.addEventListener("keyup",(e=>updateGameKey(e,!1))),window.addEventListener("blur",(()=>{runtimeReady&&Module._th08_web_clear_key_state()})),canvas.addEventListener("pointerdown",focusGameCanvas),displayCanvas.addEventListener("pointerdown",focusGameCanvas);var Module={noInitialRun:!0,canvas:canvas,print:appendLog,printErr:appendLog,setStatus:e=>{e&&(statusElement.textContent=e)},onAbort:e=>{statusElement.textContent=`The game aborted: ${e}`},onRuntimeInitialized:()=>{installBitmapPresentation(),runtimeReady=!0,updateStartState()}};startButton.addEventListener("click",(async()=>{if(!selectionIsValid()||started)return;const[e,t]=selectedFiles();started=!0,updateStartState();try{statusElement.textContent="Loading local retail data and restoring browser-local saves…";const[a]=await Promise.all([e.arrayBuffer(),prepareGameFileSystem()]),n=new Uint8Array(a),s=Module._th08_web_allocate_game_data(n.byteLength);if(!s)throw new Error("Unable to allocate session memory for th08.dat.");Module.HEAPU8.set(n,s),Module.th08RetailFiles=[e,t],Module._th08_web_set_retail_file_sizes(e.size,t.size),Module.FS.chdir("/game"),Module.FS.writeFile("th08.dat",new Uint8Array(0)),Module.FS.writeFile("thbgm.dat",new Uint8Array(0)),focusGameCanvas(),statusElement.textContent="Starting TH08 from local retail data…",await saveBrowserData("Browser save storage is ready."),Module.callMain([])}catch(e){console.error(e),statusElement.textContent=`Unable to start TH08: ${e.message}`,started=!1,updateStartState()}}))</script><script>
 const joystick=document.querySelector("#joystick");
 const joystickKnob=document.querySelector("#joystick-knob");
 const touchKeyCodes=new Map([
@@ -254,7 +275,154 @@ async function saveBrowserData(message="Game data saved in this browser"){
     return false;
   }
 }
-saveNowButton.addEventListener("click",()=>saveBrowserData());
+
+function bytesToBase64(bytes){
+  let binary="";
+  const chunk=0x8000;
+  for(let i=0;i<bytes.length;i+=chunk) binary+=String.fromCharCode(...bytes.subarray(i,i+chunk));
+  return btoa(binary);
+}
+function base64ToBytes(value){
+  const binary=atob(value),bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+  return bytes;
+}
+function collectCloudFiles(root){
+  const result=[];
+  function walk(path){
+    for(const name of Module.FS.readdir(path)){
+      if(name==="."||name==="..")continue;
+      const full=path+"/"+name,mode=Module.FS.lstat(full).mode;
+      if(Module.FS.isDir(mode)) walk(full);
+      else if(Module.FS.isFile(mode)) result.push({path:full,data:bytesToBase64(Module.FS.readFile(full))});
+    }
+  }
+  walk(root);
+  return result;
+}
+function buildCloudPayload(){
+  const files=[
+    ...collectCloudFiles("/save"),
+    ...persistentDirectories.flatMap(dir=>collectCloudFiles("/game/"+dir))
+  ];
+  const payload={version:1,savedAt:new Date().toISOString(),files};
+  const size=JSON.stringify(payload).length;
+  if(size>7000000) throw new Error("Save data is too large to sync to cloud.");
+  return payload;
+}
+function ensureCloudPath(path){
+  const parts=path.split("/").filter(Boolean);
+  let current="";
+  for(const part of parts.slice(0,-1)){
+    current+="/"+part;
+    try{Module.FS.mkdir(current)}catch(error){
+      const mode=Module.FS.lstat(current).mode;
+      if(!Module.FS.isDir(mode))throw error;
+    }
+  }
+}
+function restoreCloudPayload(payload){
+  if(!payload||payload.version!==1||!Array.isArray(payload.files))throw new Error("Invalid cloud save.");
+  for(const file of payload.files){
+    if(!/^\/(save|game\/(replay|backup|snapshot))\//.test(file.path))continue;
+    ensureCloudPath(file.path);
+    Module.FS.writeFile(file.path,base64ToBytes(file.data));
+  }
+}
+async function getCloudUser(){
+  const {data}=await supabaseClient.auth.getUser();
+  return data?.user||null;
+}
+async function cloudUpload(){
+  const user=await getCloudUser();
+  if(!user)throw new Error("Sign in with Google first.");
+  if(!gameFileSystemReady)await prepareGameFileSystem();
+  await syncFileSystem(false);
+  const payload=buildCloudPayload();
+  const {error}=await supabaseClient.from("th08_cloud_saves").upsert({user_id:user.id,payload,revision:Date.now(),updated_at:new Date().toISOString()},{onConflict:"user_id"});
+  if(error)throw error;
+  cloudStatus.textContent="Cloud save updated.";
+  return true;
+}
+async function cloudDownload(){
+  const user=await getCloudUser();
+  if(!user)throw new Error("Sign in with Google first.");
+  if(!gameFileSystemReady)await prepareGameFileSystem();
+  const {data,error}=await supabaseClient.from("th08_cloud_saves").select("payload,updated_at").eq("user_id",user.id).maybeSingle();
+  if(error)throw error;
+  if(!data){
+    await cloudUpload();
+    return "uploaded";
+  }
+  restoreCloudPayload(data.payload);
+  await syncFileSystem(false);
+  cloudStatus.textContent="Cloud save restored.";
+  return "downloaded";
+}
+async function syncCloud(){
+  cloudSyncButton.disabled=true;
+  try{
+    await saveBrowserData();
+    const user=await getCloudUser();
+    if(!user)throw new Error("Sign in with Google first.");
+    const {data,error}=await supabaseClient.from("th08_cloud_saves").select("payload,updated_at").eq("user_id",user.id).maybeSingle();
+    if(error)throw error;
+    if(data){
+      restoreCloudPayload(data.payload);
+      await syncFileSystem(false);
+      cloudStatus.textContent="Cloud save downloaded and synced.";
+    }else{
+      await cloudUpload();
+    }
+  }catch(error){
+    console.error(error);
+    cloudStatus.textContent="Cloud sync failed: "+error.message;
+  }finally{cloudSyncButton.disabled=false}
+}
+async function updateAccountUI(user){
+  if(user){
+    accountName.textContent=user.email||user.user_metadata?.full_name||"Google account";
+    googleLoginButton.hidden=true;
+    googleLogoutButton.hidden=false;
+    cloudSyncButton.disabled=false;
+  }else{
+    accountName.textContent="Not signed in";
+    googleLoginButton.hidden=false;
+    googleLogoutButton.hidden=true;
+    cloudSyncButton.disabled=true;
+  }
+}
+googleLoginButton.addEventListener("click",async()=>{
+  googleLoginButton.disabled=true;
+  cloudStatus.textContent="Opening Google sign-in…";
+  const {error}=await supabaseClient.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname}});
+  if(error){cloudStatus.textContent="Google sign-in failed: "+error.message;googleLoginButton.disabled=false}
+});
+googleLogoutButton.addEventListener("click",async()=>{
+  await supabaseClient.auth.signOut();
+  cloudStatus.textContent="Signed out. Your local browser save remains available.";
+});
+cloudSyncButton.addEventListener("click",syncCloud);
+supabaseClient.auth.onAuthStateChange(async(event,session)=>{
+  await updateAccountUI(session?.user||null);
+  if(event==="SIGNED_IN"&&session?.user){
+    cloudStatus.textContent="Signed in. Checking cloud save…";
+    try{
+      if(!gameFileSystemReady&&runtimeReady)await prepareGameFileSystem();
+      const result=await cloudDownload();
+      cloudStatus.textContent=result==="downloaded"?"Cloud save restored on this device.":"Your local save was uploaded to the cloud.";
+    }catch(error){
+      console.error(error);
+      cloudStatus.textContent="Cloud save setup needs attention: "+error.message;
+    }
+  }
+});
+getCloudUser().then(updateAccountUI).catch(()=>updateAccountUI(null));
+
+saveNowButton.addEventListener("click",async()=>{
+  await saveBrowserData();
+  if(await getCloudUser())await cloudUpload().catch(error=>cloudStatus.textContent="Cloud upload failed: "+error.message);
+});
 window.addEventListener("pagehide",()=>{
   if(gameFileSystemReady&&Module.th08SavePersistence?.available){
     try{syncFileSystem(false)}catch{}
