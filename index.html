@@ -1,25 +1,143 @@
-<!doctypehtml><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1" name=viewport><meta name="theme-color" content="#070811"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>TH08 Web — Imperishable Night</title><link href=th08-web-icon.png rel=icon type=image/png><style>
-:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--panel:#12131d;--panel-2:#0a0b12;--line:#37334a;--text:#f5f1ff;--muted:#cbc5dc;--accent:#a98cff;--accent-2:#7d6bd4;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:#080910;color:var(--text)}html{background:#080910}body{min-height:100vh;min-height:100dvh;overscroll-behavior:none;overflow-x:hidden}button,input{font:inherit}button{touch-action:manipulation}
-main{display:grid;grid-template-columns:minmax(19rem,25rem) minmax(0,1fr);gap:1.25rem;align-items:start;max-width:1400px;margin:0 auto;padding:clamp(.75rem,2vw,2rem)}
-section{padding:1.25rem;border:1px solid var(--line);border-radius:1rem;background:var(--panel);box-shadow:0 1rem 3rem #0008}.identity{display:flex;gap:.85rem;align-items:center}.identity img{width:3.5rem;height:3.5rem;border-radius:.75rem}h1{margin:0 0 .35rem;font-size:1.55rem}h2{margin:0;color:#b8a6ff;font-size:.9rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}p{color:var(--muted);line-height:1.55}label{display:block;margin:1rem 0;font-weight:650}input{display:block;width:100%;margin-top:.45rem;color:#ded8ef}button{border:0;border-radius:.7rem;background:var(--accent);color:#100b1d;font-weight:850;cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}#start{width:100%;padding:.9rem 1rem;min-height:3rem}
-#status{min-height:2.8rem;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:var(--panel-2);color:#ddd5f5}#log{max-height:13rem;overflow:auto;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:#08090e;color:#aaa3bc;font:.75rem/1.45 ui-monospace,monospace;white-space:pre-wrap}
-.game{display:grid;min-width:0;min-height:0;padding:.65rem}.game-shell{display:grid;grid-template-columns:minmax(126px,16vw) minmax(320px,640px) minmax(126px,16vw);grid-template-areas:"joystick canvas actions" "none note none" "none utility none";align-items:center;justify-content:center;gap:.4rem clamp(.5rem,2vw,1.25rem);width:100%;min-width:0}.canvas-wrap{grid-area:canvas;position:relative;width:min(640px,100%);max-width:100%;aspect-ratio:4/3;justify-self:center;overflow:hidden;border-radius:.6rem;background:#000;box-shadow:0 1rem 2.5rem #0009}
-canvas{position:absolute;inset:0;width:100%;height:100%;border:1px solid #302a44;background:#000;image-rendering:auto;outline:0;touch-action:none;user-select:none;-webkit-user-select:none}#display-canvas{visibility:hidden}.game.bitmap-presentation #canvas{visibility:hidden}.game.bitmap-presentation #display-canvas{visibility:visible}.policy{font-size:.92rem}.controls{font-size:.86rem}code{color:#d6c8ff}
-.mobile-controls{display:contents;user-select:none;-webkit-user-select:none}.touch-deck{display:contents}.control-cluster{display:grid;place-items:center;touch-action:none}.joystick{grid-area:joystick;position:relative;width:clamp(170px,21vw,230px);height:clamp(170px,21vw,230px);touch-action:none;justify-self:center;filter:drop-shadow(0 .55rem 1rem #0007)}
-.joystick-ring{width:100%;height:100%;border-radius:50%;padding:9%;background:#171725;box-shadow:inset 0 0 0 2px #3b3750,0 8px 20px #0007}.joystick-base{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#504b70,#29263c 55%,#171621 100%);box-shadow:inset 0 7px 16px #0006}.joystick-base::before{content:"";position:absolute;inset:9%;border:2px solid #7d72a3;border-radius:50%;opacity:.28}.joystick-knob{position:absolute;left:50%;top:50%;width:43%;height:43%;margin:-21.5% 0 0 -21.5%;border-radius:50%;background:radial-gradient(circle at 35% 25%,#c5b8ff,#7567a8 55%,#4c4477 100%);box-shadow:0 7px 14px #0008,inset 0 2px 0 #fff5;transform:translate(0,0);transition:transform .035s ease}.joystick-label{position:absolute;inset:auto 0 3px;text-align:center;color:#eee9fb;font-size:.72rem;font-weight:950;letter-spacing:.16em;pointer-events:none;text-shadow:0 2px 4px #000}
-.actions{grid-area:actions;display:grid;grid-template-columns:repeat(2,minmax(74px,clamp(84px,8.7vw,116px)));grid-auto-rows:minmax(74px,clamp(84px,8.7vw,116px));gap:clamp(.65rem,1.25vw,1rem);align-content:center;justify-content:center}.actions button{min-width:0;min-height:0;border-radius:50%;font-size:clamp(.82rem,1vw,1rem);letter-spacing:.05em;box-shadow:inset 0 -5px 0 #0004,0 7px 16px #0007}.actions .fire{background:#e0a7ff}.actions .bomb{background:#9fc4ff;transform:scale(1.06)}.actions .focus{background:#a9d9b2}.actions .pause{background:#e5c28d}.actions .focus small{display:block;margin-top:.15rem;font-size:.68em;font-weight:900;letter-spacing:.04em;opacity:.78}.actions button[data-active="1"]{transform:translateY(2px) scale(.98);filter:brightness(1.12);box-shadow:inset 0 -2px 0 #0004,0 3px 9px #0006}.actions .bomb[data-active="1"]{transform:translateY(2px) scale(1.02)}
-.touch-note{grid-area:note;text-align:center;color:#aaa3bc;font-size:.74rem;margin:.15rem 0}.utility{grid-area:utility;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap}.utility button{padding:.65rem .9rem;min-height:2.7rem;background:#201e2e;color:#ddd6ef;font-size:.82rem;box-shadow:inset 0 -3px 0 #0004,0 4px 10px #0005}#save-now{background:#39324f;color:#efe9ff;font-weight:900}
-.account-panel{margin:1rem 0 0;padding:.85rem;border-radius:.7rem;background:#0c0d14;border:1px solid #2d2940}.account-row{display:flex;gap:.6rem;align-items:center;justify-content:space-between;flex-wrap:wrap}.account-name{font-size:.82rem;color:#d9d2e9;overflow:hidden;text-overflow:ellipsis}#google-login{width:100%;padding:.75rem 1rem;background:#fff;color:#202124;border:1px solid #dadce0;font-weight:800}#google-logout{padding:.5rem .75rem;background:#28243a;color:#ddd6ef;font-size:.78rem}#cloud-sync{padding:.5rem .75rem;background:#4b3c78;color:#fff;font-size:.78rem}.cloud-status{margin:.55rem 0 0;font-size:.76rem;color:#9f97b4}.orientation-hint{display:none}
-@media (max-width:1100px){main{grid-template-columns:1fr}}
+<!doctypehtml><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"name=viewport><title>TH08 Web — Imperishable Night</title><link href=th08-web-icon.png rel=icon type=image/png><style>
+:root{
+  color-scheme:dark;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --panel:#12131d;--panel-2:#0a0b12;--line:#37334a;--text:#f5f1ff;--muted:#cbc5dc;
+  --accent:#a98cff;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#070811;color:var(--text)}
+html{background:#070811}body{min-height:100vh;min-height:100dvh;overscroll-behavior:none;overflow-x:hidden}
+button,input{font:inherit}button{border:0;touch-action:manipulation}
+main{display:grid;grid-template-columns:minmax(19rem,25rem) minmax(0,1fr);gap:1rem;align-items:start;max-width:1440px;margin:0 auto;padding:clamp(.65rem,1.5vw,1.5rem)}
+section{padding:1.1rem;border:1px solid var(--line);border-radius:1rem;background:var(--panel);box-shadow:0 1rem 3rem #0008}
+.identity{display:flex;gap:.75rem;align-items:center}.identity img{width:3.25rem;height:3.25rem;border-radius:.7rem}
+h1{margin:0 0 .3rem;font-size:1.45rem}h2{margin:0;color:#b8a6ff;font-size:.85rem;font-weight:650;letter-spacing:.08em;text-transform:uppercase}
+p{color:var(--muted);line-height:1.5}label{display:block;margin:.85rem 0;font-weight:650}
+input{display:block;width:100%;margin-top:.4rem;color:#ded8ef}button{border-radius:.7rem;background:var(--accent);color:#100b1d;font-weight:850;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.45}#start{width:100%;padding:.85rem 1rem;min-height:2.9rem}
+#status{min-height:2.6rem;margin:.8rem 0 0;padding:.75rem;border-radius:.5rem;background:var(--panel-2);color:#ddd5f5}
+#log{max-height:11rem;overflow:auto;margin:.75rem 0 0;padding:.75rem;border-radius:.5rem;background:#08090e;color:#aaa3bc;font:.72rem/1.45 ui-monospace,monospace;white-space:pre-wrap}
+.game{display:grid;min-width:0;min-height:0;padding:.55rem}.game-shell{display:grid;grid-template-columns:minmax(150px,16vw) minmax(320px,640px) minmax(150px,16vw);grid-template-areas:"joystick canvas actions" "none note none" "none utility none";align-items:center;justify-content:center;gap:.35rem clamp(.5rem,1.3vw,1rem);width:100%;min-width:0}
+.canvas-wrap{grid-area:canvas;position:relative;width:min(640px,100%);max-width:100%;aspect-ratio:4/3;justify-self:center;overflow:hidden;border-radius:.65rem;background:#000;box-shadow:0 1rem 2.5rem #0009}
+canvas{position:absolute;inset:0;width:100%;height:100%;border:1px solid #302a44;background:#000;image-rendering:auto;outline:0;touch-action:none;user-select:none;-webkit-user-select:none}
+#display-canvas{visibility:hidden}.game.bitmap-presentation #canvas{visibility:hidden}.game.bitmap-presentation #display-canvas{visibility:visible}
+.policy{font-size:.9rem}.controls{font-size:.84rem}code{color:#d6c8ff}.mobile-controls{display:contents;user-select:none;-webkit-user-select:none}.touch-deck{display:contents}.control-cluster{display:grid;place-items:center;touch-action:none}
+.joystick{grid-area:joystick;position:relative;width:clamp(180px,21vw,250px);height:clamp(180px,21vw,250px);touch-action:none;justify-self:center;filter:drop-shadow(0 .55rem 1rem #0007)}
+.joystick-ring{width:100%;height:100%;border-radius:50%;padding:9%;background:#171725;box-shadow:inset 0 0 0 2px #3b3750,0 8px 20px #0007}
+.joystick-base{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#504b70,#29263c 55%,#171621 100%);box-shadow:inset 0 7px 16px #0006}
+.joystick-base::before{content:"";position:absolute;inset:9%;border:2px solid #7d72a3;border-radius:50%;opacity:.28}
+.joystick-knob{position:absolute;left:50%;top:50%;width:43%;height:43%;margin:-21.5% 0 0 -21.5%;border-radius:50%;background:radial-gradient(circle at 35% 25%,#c5b8ff,#7567a8 55%,#4c4477 100%);box-shadow:0 7px 14px #0008,inset 0 2px 0 #fff5;transform:translate(0,0);transition:transform .035s ease}
+.joystick-label{position:absolute;inset:auto 0 3px;text-align:center;color:#eee9fb;font-size:.72rem;font-weight:950;letter-spacing:.16em;pointer-events:none;text-shadow:0 2px 4px #000}
+.actions{grid-area:actions;display:grid;grid-template-columns:repeat(2,minmax(82px,clamp(92px,8.7vw,124px)));grid-auto-rows:minmax(82px,clamp(92px,8.7vw,124px));gap:clamp(.6rem,1.05vw,.9rem);align-content:center;justify-content:center}
+.actions button{min-width:0;min-height:0;border-radius:50%;font-size:clamp(.86rem,1vw,1rem);letter-spacing:.04em;box-shadow:inset 0 -5px 0 #0004,0 7px 16px #0007;transition:transform .06s ease,filter .06s ease}.actions .fire{background:#e0a7ff}.actions .bomb{background:#9fc4ff}.actions .focus{background:#a9d9b2}.actions .pause{background:#e5c28d}
+.actions button .button-sub{display:block;margin-top:.15rem;font-size:.66em;font-weight:950;opacity:.82;letter-spacing:.03em}.actions .focus{font-size:clamp(.8rem,1vw,1rem)}
+.actions button[data-active="1"]{transform:translateY(2px) scale(.97);filter:brightness(1.12);box-shadow:inset 0 -2px 0 #0004,0 3px 9px #0006}
+.touch-note{grid-area:note;text-align:center;color:#aaa3bc;font-size:.72rem;margin:.1rem 0}.utility{grid-area:utility;display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap}.utility button{padding:.65rem .85rem;min-height:2.65rem;background:#201e2e;color:#ddd6ef;font-size:.82rem;box-shadow:inset 0 -3px 0 #0004,0 4px 10px #0005}#save-now{background:#39324f;color:#efe9ff;font-weight:900}
+.account-panel{margin:.85rem 0 0;padding:.8rem;border-radius:.7rem;background:#0c0d14;border:1px solid #2d2940}.account-row{display:flex;gap:.55rem;align-items:center;justify-content:space-between;flex-wrap:wrap}.account-name{font-size:.8rem;color:#d9d2e9;overflow:hidden;text-overflow:ellipsis}#google-login{width:100%;padding:.7rem .9rem;background:#fff;color:#202124;border:1px solid #dadce0;font-weight:800}#google-logout{padding:.5rem .7rem;background:#28243a;color:#ddd6ef;font-size:.76rem}#cloud-sync{padding:.5rem .7rem;background:#4b3c78;color:#fff;font-size:.76rem}.cloud-status{margin:.45rem 0 0;font-size:.74rem;color:#9f97b4}
+.orientation-hint{display:none}.desktop-only{display:block}
+@media (max-width:1060px){main{grid-template-columns:1fr}}
 @media (pointer:coarse) and (max-width:900px){
- body{background:#070811}main{display:block;width:100%;max-width:none;margin:0;padding:var(--safe-top) max(.55rem,var(--safe-right)) max(.75rem,var(--safe-bottom)) max(.55rem,var(--safe-left))}main>section:first-child{margin-bottom:.65rem;padding:1rem}.game{padding:.35rem 0 0;border-radius:0;border:0;box-shadow:none;background:transparent}.game-shell{grid-template-columns:minmax(0,1fr);grid-template-areas:"canvas" "touchdeck" "note" "utility";gap:.45rem;justify-items:center}.canvas-wrap{width:100%;border-radius:.75rem}.mobile-controls{display:block;width:100%}.touch-deck{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;width:100%;gap:.55rem;margin:.1rem 0 .15rem;padding:.1rem 0}.joystick{grid-area:auto;width:min(43vw,230px);height:min(43vw,230px)}.actions{grid-area:auto;width:100%;grid-template-columns:repeat(2,minmax(82px,1fr));grid-auto-rows:minmax(82px,clamp(82px,22vw,122px));gap:clamp(.5rem,2vw,.8rem)}.actions button{width:100%;height:100%;font-size:clamp(.95rem,3.5vw,1.15rem)}.actions .bomb{transform:scale(1.08)}.actions .bomb[data-active="1"]{transform:translateY(2px) scale(1.04)}.touch-note{grid-area:note;width:100%;font-size:.72rem;line-height:1.35;padding:0 .5rem}.utility{grid-area:utility;width:100%;gap:.45rem}.utility button{flex:1 1 0;min-width:0;min-height:3rem;padding:.7rem .75rem}.orientation-hint{display:block;margin:.55rem 0 .8rem;padding:.7rem .8rem;border-radius:.65rem;background:#0c0d14;color:#aaa3bc;font-size:.8rem;text-align:center}.desktop-only{display:none}#status{font-size:.9rem}#log{max-height:10rem}}
+  main{display:block;width:100%;max-width:none;margin:0;padding:var(--safe-top) max(.55rem,var(--safe-right)) max(.65rem,var(--safe-bottom)) max(.55rem,var(--safe-left))}
+  main>section:first-child{margin-bottom:.55rem;padding:.85rem}
+  main>section.game{padding:.2rem 0 0;border:0;border-radius:0;background:transparent;box-shadow:none}
+  .policy,.controls{font-size:.82rem}.orientation-hint{display:block;margin:.45rem 0 .65rem;padding:.6rem .7rem;border-radius:.6rem;background:#0c0d14;color:#aaa3bc;font-size:.76rem;text-align:center}
+  .game-shell{grid-template-columns:1fr;grid-template-areas:"canvas" "touchdeck" "note" "utility";gap:.45rem;justify-items:center}
+  .canvas-wrap{width:min(100%,760px);aspect-ratio:4/3}.mobile-controls{display:block;width:100%}
+  .touch-deck{display:grid;grid-area:touchdeck;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;width:100%;gap:.5rem;margin:.1rem 0 .1rem;padding:.05rem 0}
+  .joystick{grid-area:auto;width:min(44vw,250px);height:min(44vw,250px)}
+  .actions{grid-area:auto;width:100%;grid-template-columns:repeat(2,minmax(88px,1fr));grid-auto-rows:minmax(88px,clamp(88px,22vw,130px));gap:clamp(.5rem,2vw,.8rem)}
+  .actions button{width:100%;height:100%;font-size:clamp(.95rem,3.2vw,1.2rem)}
+  .actions .focus{font-size:clamp(.86rem,2.9vw,1.1rem)}.touch-note{grid-area:note;width:100%;font-size:.72rem;line-height:1.35;padding:0 .5rem}.utility{grid-area:utility;width:100%;gap:.45rem}.utility button{flex:1 1 0;min-width:0;min-height:3rem;padding:.7rem .7rem;font-size:.88rem}.desktop-only{display:none}
+}
+/* Landscape: never hide setup/data controls. Keep setup compact and put the game between large touch controls. */
 @media (pointer:coarse) and (orientation:landscape){
- html,body{background:#070811}main{display:grid;grid-template-columns:minmax(280px,20rem) minmax(0,1fr);gap:.75rem;width:100%;max-width:1400px;margin:0 auto;padding:var(--safe-top) max(.65rem,var(--safe-right)) max(.7rem,var(--safe-bottom)) max(.65rem,var(--safe-left));align-items:start}main>section:first-child{display:block;max-height:calc(100dvh - var(--safe-top) - var(--safe-bottom) - 1rem);overflow:auto;padding:1rem}.game{min-width:0;padding:.5rem;border-radius:.85rem}.game-shell{width:100%;grid-template-columns:minmax(120px,15%) minmax(300px,620px) minmax(180px,22%);grid-template-areas:"joystick canvas actions" "none note none" "none utility none";align-items:center;justify-content:center;gap:.35rem clamp(.45rem,1.1vw,.9rem);min-width:0}.canvas-wrap{width:min(640px,100%);max-width:100%;aspect-ratio:4/3}.joystick{width:min(15vw,190px);height:min(15vw,190px)}.actions{grid-template-columns:repeat(2,minmax(76px,8vw));grid-auto-rows:minmax(76px,8vw);gap:clamp(.45rem,1vw,.7rem)}.actions button{font-size:clamp(.82rem,1.1vw,1rem)}.touch-note{font-size:.72rem;max-width:100%;padding:0 .4rem}.utility{position:static;width:100%;grid-area:utility;justify-content:center;flex-wrap:wrap}.utility button{min-height:2.5rem;padding:.55rem .75rem;font-size:.78rem}}
-@media (pointer:coarse) and (orientation:landscape) and (max-width:1000px){main{display:block}main>section:first-child{max-height:none;margin-bottom:.6rem}.game{padding:.35rem 0 0}.game-shell{grid-template-columns:minmax(104px,24vw) minmax(260px,1fr) minmax(116px,24vw);gap:.3rem .45rem}.joystick{width:min(24vw,190px);height:min(24vw,190px)}.actions{grid-template-columns:repeat(2,minmax(70px,17vw));grid-auto-rows:minmax(70px,17vw)}}
-@media (pointer:coarse) and (orientation:portrait) and (max-width:560px){.actions{grid-auto-rows:minmax(92px,26vw)}.actions button{font-size:clamp(1rem,4.2vw,1.2rem)}.joystick{width:min(46vw,230px);height:min(46vw,230px)}.utility button{font-size:.82rem}}
-@media (pointer:coarse) and (max-height:500px) and (orientation:landscape){.joystick{width:min(29vh,200px);height:min(29vh,200px)}.actions{grid-auto-rows:minmax(68px,18vh)}.actions button{font-size:.85rem}}
+  html,body{background:#05060b}
+  main{display:grid;grid-template-columns:1fr;grid-template-rows:auto auto;gap:.45rem;max-width:none;width:100%;padding:var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left)}
+  main>section:first-child{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr) minmax(180px,1fr);grid-template-areas:"identity gamefile bgmfile" "start status status" "account log log";column-gap:.65rem;row-gap:.25rem;margin:0;padding:.65rem;border-radius:.8rem}
+  main>section:first-child .identity{grid-area:identity}.identity img{width:2.65rem;height:2.65rem}h1{font-size:1.2rem}h2{font-size:.72rem}
+  main>section:first-child .policy,main>section:first-child .orientation-hint,main>section:first-child .controls{display:none}
+  main>section:first-child label:nth-of-type(1){grid-area:gamefile;margin:.05rem 0}.gamefile{}
+  main>section:first-child label:nth-of-type(2){grid-area:bgmfile;margin:.05rem 0}
+  main>section:first-child label input{margin-top:.25rem;min-width:0}
+  main>section:first-child #start{grid-area:start;min-height:2.55rem;padding:.55rem .75rem}
+  main>section:first-child #status{grid-area:status;margin:0;min-height:2.55rem;padding:.55rem .7rem;overflow:hidden}
+  main>section:first-child .account-panel{grid-area:account;margin:0;padding:.5rem}.account-panel #google-login{padding:.45rem .7rem}.account-panel .cloud-status{display:none}
+  main>section:first-child #log{grid-area:log;max-height:3.1rem;margin:0;padding:.45rem .55rem;font-size:.65rem}
+  main>section.game{min-height:calc(100svh - 7.3rem);min-height:calc(100dvh - 7.3rem);padding:0;border:0;background:transparent;box-shadow:none}
+  .game-shell{min-height:100%;grid-template-columns:minmax(190px,23vw) minmax(480px,720px) minmax(190px,23vw);grid-template-areas:"joystick canvas actions" "none note none" "none utility none";align-items:center;gap:.2rem .6rem}
+  .touch-deck{display:contents}
+  .canvas-wrap{width:min(100%,720px);aspect-ratio:4/3}
+  .joystick{width:min(23vw,255px);height:min(23vw,255px)}
+  .actions{grid-template-columns:repeat(2,minmax(86px,118px));grid-auto-rows:minmax(86px,118px);gap:.55rem;justify-content:center}
+  .actions button{font-size:.95rem}.actions .focus{font-size:.85rem}.touch-note{font-size:.67rem}.utility button{min-height:2.45rem;padding:.5rem .7rem;font-size:.75rem}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:760px){
+  main>section:first-child{grid-template-columns:minmax(165px,1fr) minmax(165px,1fr) minmax(165px,1fr);padding:.45rem}
+  main>section.game{min-height:calc(100svh - 5.8rem);min-height:calc(100dvh - 5.8rem)}
+  .game-shell{grid-template-columns:minmax(170px,22vw) minmax(420px,640px) minmax(170px,22vw)}
+  .canvas-wrap{width:min(100%,640px)}.joystick{width:min(21vw,225px);height:min(21vw,225px)}
+  .actions{grid-template-columns:repeat(2,minmax(78px,104px));grid-auto-rows:minmax(78px,104px);gap:.45rem}
+}
+@media (max-width:560px) and (orientation:portrait){main>section:first-child{padding:.8rem}.identity img{width:2.9rem;height:2.9rem}h1{font-size:1.3rem}}
 @media (prefers-reduced-motion:reduce){.joystick-knob,.actions button,.utility button{transition:none}}
+
+
+/* ===== Touch overlay: based on the supplied touch_overlay.html ===== */
+:root{
+  --touch-paper:#efe6d2;
+  --touch-shell:rgba(24,20,30,.55);
+  --touch-z:#ffd23f;
+  --touch-x:#ff3b4e;
+  --touch-f:#3fa7ff;
+  --touch-sl:env(safe-area-inset-left,0px);
+  --touch-sr:env(safe-area-inset-right,0px);
+  --touch-st:env(safe-area-inset-top,0px);
+  --touch-sb:env(safe-area-inset-bottom,0px);
+}
+#mobile-touch-overlay{display:none}
+.overlay-sr{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (pointer:coarse){
+  html,body{touch-action:none;overscroll-behavior:none}
+  .game-shell{grid-template-areas:"canvas" "note" "utility" !important;grid-template-columns:1fr !important;grid-template-rows:auto auto auto !important;gap:.35rem !important}
+  .game{position:relative}
+  .game-shell{position:relative}
+  #mobile-touch-overlay{display:block;position:fixed;inset:0;z-index:50;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  #dpad,.overlay-btn{position:absolute;pointer-events:none;}
+  #dpad{left:calc(var(--touch-sl) + clamp(1.25rem,4vmin,3.5rem));bottom:calc(var(--touch-sb) + clamp(1.5rem,7vmin,4rem));width:min(38vmin,330px);height:min(38vmin,330px);opacity:.86;filter:drop-shadow(0 .6vmin 1vmin rgba(0,0,0,.45))}
+  #dpad .body{fill:var(--touch-shell);stroke:var(--touch-paper);stroke-width:2.2;stroke-linejoin:round}
+  #dpad .dimple{fill:none;stroke:var(--touch-paper);stroke-opacity:.45;stroke-width:1.6}
+  #dpad .tri{fill:var(--touch-paper);fill-opacity:.7}
+  #dpad .arm{fill:var(--touch-paper);fill-opacity:0;transition:fill-opacity .05s}
+  #dpad .arm.on{fill-opacity:.5}
+  .overlay-btn{width:var(--d);height:var(--d);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:50%;border:.9vmin solid var(--c);background:var(--touch-shell);color:var(--touch-paper);opacity:.86;font-family:"Noto Sans SC","Roboto Condensed",system-ui,sans-serif;font-weight:800;line-height:1;box-shadow:inset 0 0 0 .5vmin rgba(0,0,0,.35),0 .6vmin 1vmin rgba(0,0,0,.4);transition:background-color .05s,color .05s,box-shadow .08s,transform .06s,opacity .05s}
+  .overlay-btn b{font-size:clamp(1rem,calc(var(--d)*.31),2rem);white-space:nowrap}
+  .overlay-btn i{font-style:normal;font-size:clamp(.65rem,calc(var(--d)*.14),.95rem);margin-top:.6vmin;opacity:.85;white-space:nowrap}
+  .overlay-btn.on{background:var(--c);color:#16121c;opacity:1;box-shadow:inset 0 0 0 .5vmin rgba(0,0,0,.25),0 0 2.4vmin var(--c);transform:scale(.98)}
+  #btn-z{--c:var(--touch-z);--d:clamp(120px,22vmin,205px);right:calc(var(--touch-sr) + clamp(1rem,3vmin,2.2rem));bottom:calc(var(--touch-sb) + clamp(1.5rem,8vmin,4rem))}
+  #btn-x{--c:var(--touch-x);--d:clamp(112px,20vmin,190px);right:calc(var(--touch-sr) + clamp(4rem,11vmin,6rem));bottom:calc(var(--touch-sb) + clamp(6rem,32vmin,10rem))}
+  #btn-focus{--c:var(--touch-f);--d:clamp(100px,17vmin,165px);right:calc(var(--touch-sr) + clamp(7rem,29vmin,12rem));bottom:calc(var(--touch-sb) + clamp(1.25rem,6vmin,3rem))}
+  #btn-esc{--c:var(--touch-paper);--d:clamp(66px,11vmin,100px);top:calc(var(--touch-st) + clamp(.8rem,3vmin,2rem));right:calc(var(--touch-sr) + clamp(.8rem,3vmin,2rem))}
+  .touch-note{width:100%;max-width:100%;line-height:1.35}
+  .utility{position:relative;z-index:2}
+}
+@media (pointer:coarse) and (orientation:portrait){
+  #dpad{width:min(38vmin,285px);height:min(38vmin,285px)}
+  #btn-z{--d:clamp(108px,22vmin,150px)}
+  #btn-x{--d:clamp(100px,20vmin,138px);right:calc(var(--touch-sr) + clamp(3rem,11vmin,5rem))}
+  #btn-focus{--d:clamp(90px,17vmin,120px);right:calc(var(--touch-sr) + clamp(6rem,29vmin,10rem))}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:760px){
+  #dpad{width:min(35vmin,245px);height:min(35vmin,245px)}
+  #btn-z{--d:clamp(96px,20vmin,145px)}
+  #btn-x{--d:clamp(90px,18vmin,132px)}
+  #btn-focus{--d:clamp(82px,15vmin,118px)}
+  #btn-esc{--d:clamp(58px,10vmin,82px)}
+}
+@media (pointer:coarse){
+  .mobile-controls-inert{display:none!important}
+}
 </style></head><body><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots can be stored in this browser and restored on reload. Use <strong>Save now</strong> before closing the tab. Clearing this site's browser data removes them. The game's running state itself is not a mid-stage save state.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><div class=account-panel>
   <div class=account-row>
     <strong>Cloud save</strong>
@@ -39,190 +157,275 @@ canvas{position:absolute;inset:0;width:100%;height:100%;border:1px solid #302a44
       <canvas height=480 id=display-canvas oncontextmenu=event.preventDefault() tabindex=0 width=640 aria-hidden=true></canvas>
     </div>
 
-    <div class="mobile-controls" aria-label="Touch controls">
-      <div class="touch-deck">
-        <div class="control-cluster joystick" id=joystick aria-label="Movement joystick">
-          <div class=joystick-ring>
-            <div class=joystick-base>
-              <div class=joystick-knob id=joystick-knob></div>
-            </div>
-          </div>
-          <span class=joystick-label>MOVE</span>
-        </div>
+    <div class="mobile-controls" id="mobile-touch-overlay" aria-label="Touch controls" role="group">
+      <svg id="dpad" viewBox="0 0 120 120" aria-label="Movement D-pad">
+        <path class="body" d="M46 4 H74 Q78 4 78 8 V42 H112 Q116 42 116 46 V74 Q116 78 112 78 H78 V112 Q78 116 74 116 H46 Q42 116 42 112 V78 H8 Q4 78 4 74 V46 Q4 42 8 42 H42 V8 Q42 4 46 4 Z"/>
+        <rect class="arm" data-dir="up" x="43.5" y="5.5" width="33" height="38" rx="3"/>
+        <rect class="arm" data-dir="down" x="43.5" y="76.5" width="33" height="38" rx="3"/>
+        <rect class="arm" data-dir="left" x="5.5" y="43.5" width="38" height="33" rx="3"/>
+        <rect class="arm" data-dir="right" x="76.5" y="43.5" width="38" height="33" rx="3"/>
+        <circle class="dimple" cx="60" cy="60" r="10"/>
+        <path class="tri" d="M60 13 L68 28 H52 Z"/>
+        <path class="tri" d="M60 107 L68 92 H52 Z"/>
+        <path class="tri" d="M13 60 L28 52 V68 Z"/>
+        <path class="tri" d="M107 60 L92 52 V68 Z"/>
+      </svg>
 
-        <div class="control-cluster actions" aria-label="Actions">
-          <button type=button class=fire data-key=KeyZ aria-label="Fire or confirm">FIRE</button>
-          <button type=button class=bomb data-key=KeyX aria-label="Bomb or skill">BOMB</button>
-          <button type=button class="focus combo-z-shift" aria-label="Focus (Z + Shift)">FOCUS<br><small>Z + SHIFT</small></button>
-          <button type=button class=pause data-key=Escape aria-label="Pause">PAUSE</button>
-        </div>
-      </div>
+      <button class="overlay-btn" id="btn-esc" type="button" data-key="Escape" aria-label="Pause / Escape"><b>ESC</b></button>
+      <button class="overlay-btn" id="btn-x" type="button" data-key="KeyX" aria-label="Bomb / X"><b>X</b><i>符卡</i></button>
+      <button class="overlay-btn" id="btn-z" type="button" data-key="KeyZ" aria-label="Fire / Z"><b>Z</b><i>射击</i></button>
+      <button class="overlay-btn" id="btn-focus" type="button" data-keys="KeyZ ShiftLeft" aria-pressed="false" aria-label="Focus, Z + Shift"><b>FOCUS</b><i id="focus-lbl">Z + SHIFT</i></button>
+      <span class="overlay-sr">Touch controls active during gameplay</span>
+    </div>
 
-      <div class=touch-note>Move with the left thumb · FIRE / BOMB / FOCUS with the right thumb · FOCUS = Z + SHIFT</div>
+    <div class="touch-note">D-pad movement · Z fire · X bomb · FOCUS locks Z + SHIFT · ESC pauses · keyboard bindings stay unchanged</div>
 
-      <div class=utility>
-        <button type=button id=fullscreen>Fullscreen</button>
-        <button type=button id=landscape>Landscape</button>
-        <button type=button id=save-now>Save now</button>
-      </div>
+    <div class="utility">
+      <button type=button id=fullscreen>Fullscreen</button>
+      <button type=button id=landscape>Landscape</button>
+      <button type=button id=save-now>Save now</button>
     </div>
   </div>
 </section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>const SUPABASE_URL="https://zpdenyjvnmmkvlydrnes.supabase.co",SUPABASE_PUBLISHABLE_KEY="sb_publishable_oXlGiGQtCxv8wAza4ifU3Q_jQGJl0dx",supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}});const googleLoginButton=document.querySelector("#google-login"),googleLogoutButton=document.querySelector("#google-logout"),cloudSyncButton=document.querySelector("#cloud-sync"),accountName=document.querySelector("#account-name"),cloudStatus=document.querySelector("#cloud-status");
-const gameInput=document.querySelector("#game-data"),bgmInput=document.querySelector("#bgm-data"),startButton=document.querySelector("#start"),statusElement=document.querySelector("#status"),logElement=document.querySelector("#log"),canvas=document.querySelector("#canvas"),displayCanvas=document.querySelector("#display-canvas"),gameSection=document.querySelector(".game"),useBitmapPresentation=navigator.userAgent.includes("Firefox/");let runtimeReady=!1,started=!1,gameFileSystemReady=!1;const persistentFiles=["th08.cfg","score.dat","score.txt"],persistentDirectories=["replay","backup","snapshot"],retailArchiveNames=new Set(["th08.dat","thbgm.dat"]);function appendLog(e){logElement.textContent+=`${e}\n`,logElement.scrollTop=logElement.scrollHeight}function selectedFiles(){return[gameInput.files[0],bgmInput.files[0]]}function selectionIsValid(){const[e,t]=selectedFiles();return"th08.dat"===e?.name.toLowerCase()&&"thbgm.dat"===t?.name.toLowerCase()}function updateStartState(){if(startButton.disabled=started||!runtimeReady||!crossOriginIsolated||!selectionIsValid(),crossOriginIsolated){if(!selectionIsValid()&&runtimeReady)statusElement.textContent="Select files named th08.dat and thbgm.dat to continue.";else if(!started&&runtimeReady){const[e,t]=selectedFiles();statusElement.textContent=`Ready: ${e.name} (${e.size.toLocaleString()} bytes), ${t.name} (${t.size.toLocaleString()} bytes).`}}else statusElement.textContent="This build requires cross-origin isolation. Serve it with the repository development server or equivalent COOP/COEP headers."}function ensureDirectory(e){try{Module.FS.mkdir(e)}catch(t){const a=Module.FS.stat(e).mode;if(!Module.FS.isDir(a))throw t}}function syncFileSystem(e){return new Promise(((t,a)=>{Module.FS.syncfs(e,(e=>e?a(e):t()))}))}function removeRetailArchivesFromSaveTree(e){let t=!1;for(const a of Module.FS.readdir(e)){if("."===a||".."===a)continue;const n=`${e}/${a}`,s=Module.FS.lstat(n).mode;retailArchiveNames.has(a.toLowerCase())?(Module.FS.isDir(s)?(removeTree(n),Module.FS.rmdir(n)):Module.FS.unlink(n),t=!0):Module.FS.isDir(s)&&(t=removeRetailArchivesFromSaveTree(n)||t)}return t}function removeTree(e){for(const t of Module.FS.readdir(e)){if("."===t||".."===t)continue;const a=`${e}/${t}`,n=Module.FS.lstat(a).mode;Module.FS.isDir(n)?(removeTree(a),Module.FS.rmdir(a)):Module.FS.unlink(a)}}function addSaveLink(e){const t=`/game/${e}`,a=`/save/${e}`;Module.FS.symlink(a,t)}function installBitmapPresentation(){if(!useBitmapPresentation)return;const e=displayCanvas.getContext("bitmaprenderer");if(!e)throw new Error("Firefox bitmap presentation is unavailable.");gameSection.classList.add("bitmap-presentation"),canvas.setAttribute("aria-hidden","true"),displayCanvas.removeAttribute("aria-hidden");for(const t of PThread.unusedWorkers){const a=t.onmessage;t.onmessage=n=>{const s=n.data?.th08WebFrame;s?e.transferFromImageBitmap(s):a.call(t,n)}}Module.th08BitmapPresentation=!0}function focusGameCanvas(){(useBitmapPresentation?displayCanvas:canvas).focus()}async function prepareGameFileSystem(){if(gameFileSystemReady)return;ensureDirectory("/game"),ensureDirectory("/save");for(const e of persistentDirectories)ensureDirectory(`/game/${e}`);let e=!1;const t=["/save",...persistentDirectories.map((e=>`/game/${e}`))];try{for(const e of t)Module.FS.mount(Module.IDBFS,{autoPersist:!0},e);await syncFileSystem(!0),e=!0}catch(e){console.error("Browser save persistence is unavailable; saves are session-only.",e),appendLog("th08-web: browser save persistence unavailable; using volatile saves")}t.reduce(((e,t)=>removeRetailArchivesFromSaveTree(t)||e),!1)&&appendLog("th08-web: removed forbidden retail archive entries from browser save storage");for(const e of persistentFiles)addSaveLink(e);Module.th08SavePersistence={available:e,mounts:t,files:[...persistentFiles],directories:[...persistentDirectories]},gameFileSystemReady=!0}gameInput.addEventListener("change",updateStartState),bgmInput.addEventListener("change",updateStartState);const gameKeyCodes=new Map([["ArrowUp",38],["ArrowDown",40],["ArrowLeft",37],["ArrowRight",39],["Numpad1",97],["Numpad2",98],["Numpad3",99],["Numpad4",100],["Numpad6",102],["Numpad7",103],["Numpad8",104],["Numpad9",105],["Home",36],["KeyP",80],["KeyD",68],["KeyZ",90],["KeyX",88],["ShiftLeft",16],["ShiftRight",16],["Escape",27],["ControlLeft",17],["ControlRight",17],["KeyQ",81],["KeyS",83],["KeyR",82],["Enter",13],["NumpadEnter",13]]);function updateGameKey(e,t){const a=gameKeyCodes.get(e.code);started&&void 0!==a&&(e.preventDefault(),Module._th08_web_set_key_state(a,t?1:0))}window.addEventListener("keydown",(e=>updateGameKey(e,!0))),window.addEventListener("keyup",(e=>updateGameKey(e,!1))),window.addEventListener("blur",(()=>{runtimeReady&&Module._th08_web_clear_key_state()})),canvas.addEventListener("pointerdown",focusGameCanvas),displayCanvas.addEventListener("pointerdown",focusGameCanvas);var Module={noInitialRun:!0,canvas:canvas,print:appendLog,printErr:appendLog,setStatus:e=>{e&&(statusElement.textContent=e)},onAbort:e=>{statusElement.textContent=`The game aborted: ${e}`},onRuntimeInitialized:()=>{installBitmapPresentation(),runtimeReady=!0,updateStartState()}};startButton.addEventListener("click",(async()=>{if(!selectionIsValid()||started)return;const[e,t]=selectedFiles();started=!0,updateStartState();try{statusElement.textContent="Loading local retail data and restoring browser-local saves…";const[a]=await Promise.all([e.arrayBuffer(),prepareGameFileSystem()]),n=new Uint8Array(a),s=Module._th08_web_allocate_game_data(n.byteLength);if(!s)throw new Error("Unable to allocate session memory for th08.dat.");Module.HEAPU8.set(n,s),Module.th08RetailFiles=[e,t],Module._th08_web_set_retail_file_sizes(e.size,t.size),Module.FS.chdir("/game"),Module.FS.writeFile("th08.dat",new Uint8Array(0)),Module.FS.writeFile("thbgm.dat",new Uint8Array(0)),focusGameCanvas(),statusElement.textContent="Starting TH08 from local retail data…",await saveBrowserData("Browser save storage is ready."),Module.callMain([])}catch(e){console.error(e),statusElement.textContent=`Unable to start TH08: ${e.message}`,started=!1,updateStartState()}}))</script><script>
-const joystick=document.querySelector("#joystick");
-const joystickKnob=document.querySelector("#joystick-knob");
-const touchKeyCodes=new Map([
-  ["ArrowUp",38],["ArrowDown",40],["ArrowLeft",37],["ArrowRight",39],
-  ["KeyZ",90],["KeyX",88],["ShiftLeft",16],["Escape",27]
-]);
-const activeTouchPointers=new Map();
-const touchKeyUsers=new Map();
-let joystickPointerId=null;
-let joystickDirections=new Set();
-let lastVibrateAt=0;
-const touchRoot=document.querySelector(".mobile-controls");
+const gameInput=document.querySelector("#game-data"),bgmInput=document.querySelector("#bgm-data"),startButton=document.querySelector("#start"),statusElement=document.querySelector("#status"),logElement=document.querySelector("#log"),canvas=document.querySelector("#canvas"),displayCanvas=document.querySelector("#display-canvas"),gameSection=document.querySelector(".game"),useBitmapPresentation=navigator.userAgent.includes("Firefox/");let runtimeReady=!1,started=!1,gameFileSystemReady=!1;const persistentFiles=["th08.cfg","score.dat","score.txt"],persistentDirectories=["replay","backup","snapshot"],retailArchiveNames=new Set(["th08.dat","thbgm.dat"]);function appendLog(e){logElement.textContent+=`${e}\n`,logElement.scrollTop=logElement.scrollHeight}function selectedFiles(){return[gameInput.files[0],bgmInput.files[0]]}function selectionIsValid(){const[e,t]=selectedFiles();return"th08.dat"===e?.name.toLowerCase()&&"thbgm.dat"===t?.name.toLowerCase()}function updateStartState(){if(startButton.disabled=started||!runtimeReady||!crossOriginIsolated||!selectionIsValid(),crossOriginIsolated){if(!selectionIsValid()&&runtimeReady)statusElement.textContent="Select files named th08.dat and thbgm.dat to continue.";else if(!started&&runtimeReady){const[e,t]=selectedFiles();statusElement.textContent=`Ready: ${e.name} (${e.size.toLocaleString()} bytes), ${t.name} (${t.size.toLocaleString()} bytes).`}}else statusElement.textContent="This build requires cross-origin isolation. Serve it with the repository development server or equivalent COOP/COEP headers."}function ensureDirectory(e){try{Module.FS.mkdir(e)}catch(t){const a=Module.FS.stat(e).mode;if(!Module.FS.isDir(a))throw t}}function syncFileSystem(e){return new Promise(((t,a)=>{Module.FS.syncfs(e,(e=>e?a(e):t()))}))}function removeRetailArchivesFromSaveTree(e){let t=!1;for(const a of Module.FS.readdir(e)){if("."===a||".."===a)continue;const n=`${e}/${a}`,s=Module.FS.lstat(n).mode;retailArchiveNames.has(a.toLowerCase())?(Module.FS.isDir(s)?(removeTree(n),Module.FS.rmdir(n)):Module.FS.unlink(n),t=!0):Module.FS.isDir(s)&&(t=removeRetailArchivesFromSaveTree(n)||t)}return t}function removeTree(e){for(const t of Module.FS.readdir(e)){if("."===t||".."===t)continue;const a=`${e}/${t}`,n=Module.FS.lstat(a).mode;Module.FS.isDir(n)?(removeTree(a),Module.FS.rmdir(a)):Module.FS.unlink(a)}}function addSaveLink(e){const t=`/game/${e}`,a=`/save/${e}`;Module.FS.symlink(a,t)}function installBitmapPresentation(){if(!useBitmapPresentation)return;const e=displayCanvas.getContext("bitmaprenderer");if(!e)throw new Error("Firefox bitmap presentation is unavailable.");gameSection.classList.add("bitmap-presentation"),canvas.setAttribute("aria-hidden","true"),displayCanvas.removeAttribute("aria-hidden");for(const t of PThread.unusedWorkers){const a=t.onmessage;t.onmessage=n=>{const s=n.data?.th08WebFrame;s?e.transferFromImageBitmap(s):a.call(t,n)}}Module.th08BitmapPresentation=!0}function focusGameCanvas(){(useBitmapPresentation?displayCanvas:canvas).focus()}async function prepareGameFileSystem(){if(gameFileSystemReady)return;ensureDirectory("/game"),ensureDirectory("/save");for(const e of persistentDirectories)ensureDirectory(`/game/${e}`);let e=!1;const t=["/save",...persistentDirectories.map((e=>`/game/${e}`))];try{for(const e of t)Module.FS.mount(Module.IDBFS,{autoPersist:!0},e);await syncFileSystem(!0),e=!0}catch(e){console.error("Browser save persistence is unavailable; saves are session-only.",e),appendLog("th08-web: browser save persistence unavailable; using volatile saves")}t.reduce(((e,t)=>removeRetailArchivesFromSaveTree(t)||e),!1)&&appendLog("th08-web: removed forbidden retail archive entries from browser save storage");for(const e of persistentFiles)addSaveLink(e);Module.th08SavePersistence={available:e,mounts:t,files:[...persistentFiles],directories:[...persistentDirectories]},gameFileSystemReady=!0}gameInput.addEventListener("change",updateStartState),bgmInput.addEventListener("change",updateStartState);const gameKeyCodes=new Map([["ArrowUp",38],["ArrowDown",40],["ArrowLeft",37],["ArrowRight",39],["Numpad1",97],["Numpad2",98],["Numpad3",99],["Numpad4",100],["Numpad6",102],["Numpad7",103],["Numpad8",104],["Numpad9",105],["Home",36],["KeyP",80],["KeyD",68],["KeyZ",90],["KeyX",88],["ShiftLeft",16],["ShiftRight",16],["Escape",27],["ControlLeft",17],["ControlRight",17],["KeyQ",81],["KeyS",83],["KeyR",82],["Enter",13],["NumpadEnter",13]]);function updateGameKey(e,t){const a=gameKeyCodes.get(e.code);started&&void 0!==a&&(e.preventDefault(),Module._th08_web_set_key_state(a,t?1:0))}window.addEventListener("keydown",(e=>updateGameKey(e,!0))),window.addEventListener("keyup",(e=>updateGameKey(e,!1))),window.addEventListener("blur",(()=>{runtimeReady&&Module._th08_web_clear_key_state()})),canvas.addEventListener("pointerdown",focusGameCanvas),displayCanvas.addEventListener("pointerdown",focusGameCanvas);var Module={noInitialRun:!0,canvas:canvas,print:appendLog,printErr:appendLog,setStatus:e=>{e&&(statusElement.textContent=e)},onAbort:e=>{statusElement.textContent=`The game aborted: ${e}`},onRuntimeInitialized:()=>{installBitmapPresentation(),runtimeReady=!0,updateStartState()}};startButton.addEventListener("click",(async()=>{if(!selectionIsValid()||started)return;const[e,t]=selectedFiles();started=!0,document.querySelector("#mobile-touch-overlay")?.classList.remove("mobile-controls-inert"),updateStartState();try{statusElement.textContent="Loading local retail data and restoring browser-local saves…";const[a]=await Promise.all([e.arrayBuffer(),prepareGameFileSystem()]),n=new Uint8Array(a),s=Module._th08_web_allocate_game_data(n.byteLength);if(!s)throw new Error("Unable to allocate session memory for th08.dat.");Module.HEAPU8.set(n,s),Module.th08RetailFiles=[e,t],Module._th08_web_set_retail_file_sizes(e.size,t.size),Module.FS.chdir("/game"),Module.FS.writeFile("th08.dat",new Uint8Array(0)),Module.FS.writeFile("thbgm.dat",new Uint8Array(0)),focusGameCanvas(),statusElement.textContent="Starting TH08 from local retail data…",await saveBrowserData("Browser save storage is ready."),Module.callMain([])}catch(e){console.error(e),statusElement.textContent=`Unable to start TH08: ${e.message}`,started=!1,updateStartState()}}))</script><script>
+(() => {
+  'use strict';
+  const KEYS = {
+    ArrowUp: 38, ArrowDown: 40, ArrowLeft: 37, ArrowRight: 39,
+    KeyZ: 90, KeyX: 88, ShiftLeft: 16, Escape: 27
+  };
+  const overlay = document.querySelector('#mobile-touch-overlay');
+  const dpad = document.querySelector('#dpad');
+  const arms = Object.fromEntries([...document.querySelectorAll('#dpad .arm')].map(el => [el.dataset.dir, el]));
+  const buttons = {
+    z: document.querySelector('#btn-z'),
+    x: document.querySelector('#btn-x'),
+    focus: document.querySelector('#btn-focus'),
+    esc: document.querySelector('#btn-esc')
+  };
+  const buttonDefs = {
+    z: [KEYS.KeyZ],
+    x: [KEYS.KeyX],
+    focus: [KEYS.KeyZ, KEYS.ShiftLeft],
+    esc: [KEYS.Escape]
+  };
+  const pointers = new Map();
+  const heldCounts = new Map();
+  let focusLocked = false;
+  let lastHaptic = 0;
+  const MIN_HOLD_MS = 45;
+  const downSince = new Map();
+  let syncTimer = 0;
 
-touchRoot?.addEventListener("contextmenu",event=>event.preventDefault());
-touchRoot?.addEventListener("dragstart",event=>event.preventDefault());
-
-function haptic(ms=8){
-  const now=performance.now();
-  if(navigator.vibrate && now-lastVibrateAt>35){
-    lastVibrateAt=now;
-    navigator.vibrate(ms);
+  function haptic(ms = 7) {
+    const now = performance.now();
+    if (navigator.vibrate && now - lastHaptic > 40) {
+      lastHaptic = now;
+      try { navigator.vibrate(ms); } catch (_) {}
+    }
   }
-}
 
-function setGameKeyCode(code,pressed){
-  if(!started || !runtimeReady) return;
-  Module._th08_web_set_key_state(code,pressed?1:0);
-}
+  function setGameKeyCode(code, pressed) {
+    if (!started || !runtimeReady) return;
+    Module._th08_web_set_key_state(code, pressed ? 1 : 0);
+  }
 
-function touchCodesForButton(button){
-  if(button.classList.contains("combo-z-shift")) return [90,16];
-  const code=touchKeyCodes.get(button.dataset.key);
-  return code ? [code] : [];
-}
+  function holdKey(code) {
+    const n = heldCounts.get(code) || 0;
+    heldCounts.set(code, n + 1);
+    if (n === 0) {
+      downSince.set(code, performance.now());
+      setGameKeyCode(code, true);
+    }
+  }
 
-function setTouchKey(button,pressed){
-  const codes=touchCodesForButton(button);
-  if(!codes.length || !started || !runtimeReady) return;
-  for(const code of codes){
-    const users=touchKeyUsers.get(code)||0;
-    if(pressed){
-      touchKeyUsers.set(code,users+1);
-      if(users===0) setGameKeyCode(code,true);
-    }else if(users>0){
-      const next=users-1;
-      if(next===0){
-        touchKeyUsers.delete(code);
-        setGameKeyCode(code,false);
-      }else{
-        touchKeyUsers.set(code,next);
+  function releaseKey(code, force = false) {
+    const n = heldCounts.get(code) || 0;
+    if (n <= 1) {
+      const startedAt = downSince.get(code) || 0;
+      const rest = MIN_HOLD_MS - (performance.now() - startedAt);
+      if (!force && rest > 0) {
+        clearTimeout(syncTimer);
+        syncTimer = setTimeout(() => releaseKey(code, true), rest + 1);
+        return;
+      }
+      heldCounts.delete(code);
+      downSince.delete(code);
+      setGameKeyCode(code, false);
+    } else {
+      heldCounts.set(code, n - 1);
+    }
+  }
+
+  function releaseAllKeys() {
+    clearTimeout(syncTimer);
+    for (const code of heldCounts.keys()) setGameKeyCode(code, false);
+    heldCounts.clear();
+    downSince.clear();
+    pointers.clear();
+    focusLocked = false;
+    for (const el of Object.values(buttons)) el?.classList.remove('on');
+    for (const arm of Object.values(arms)) arm.classList.remove('on');
+    buttons.focus?.setAttribute('aria-pressed', 'false');
+  }
+
+  function layout() {
+    // no-op: hit testing reads fresh bounding boxes each event
+  }
+
+  function hitCircle(el, x, y, slop = 1.2) {
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const rr = Math.min(r.width, r.height) / 2;
+    return { hit: Math.hypot(x - cx, y - cy) <= rr * slop, dist: Math.hypot(x - cx, y - cy) / rr };
+  }
+
+  function hitButton(x, y) {
+    let best = null, bestDist = Infinity;
+    for (const [name, el] of Object.entries(buttons)) {
+      const h = hitCircle(el, x, y, name === 'esc' ? 1.35 : 1.18);
+      if (h.hit && h.dist < bestDist) { best = name; bestDist = h.dist; }
+    }
+    return best;
+  }
+
+  function inDpad(x, y) {
+    const r = dpad.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    return Math.hypot(x - cx, y - cy) <= Math.min(r.width, r.height) * 0.5 * 1.22;
+  }
+
+  function dirsFromPoint(x, y) {
+    const r = dpad.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const dx = x - cx, dy = y - cy;
+    const mag = Math.hypot(dx, dy);
+    if (mag < Math.min(r.width, r.height) * 0.10) return [];
+    const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    const dirs = [];
+    if (ang >= -22.5 && ang < 22.5) dirs.push('right');
+    else if (ang >= 22.5 && ang < 67.5) dirs.push('down', 'right');
+    else if (ang >= 67.5 && ang < 112.5) dirs.push('down');
+    else if (ang >= 112.5 && ang < 157.5) dirs.push('down', 'left');
+    else if (ang >= 157.5 || ang < -157.5) dirs.push('left');
+    else if (ang >= -157.5 && ang < -112.5) dirs.push('up', 'left');
+    else if (ang >= -112.5 && ang < -67.5) dirs.push('up');
+    else dirs.push('up', 'right');
+    return dirs;
+  }
+
+  function syncDpad() {
+    const wanted = new Set();
+    for (const p of pointers.values()) {
+      if (p.owner === 'dpad') {
+        for (const dir of dirsFromPoint(p.x, p.y)) wanted.add(dir);
       }
     }
-  }
-  button.dataset.active=pressed?"1":"0";
-}
-
-function setJoystickDirections(next){
-  for(const code of joystickDirections){
-    if(!next.has(code)) setGameKeyCode(code,false);
-  }
-  for(const code of next){
-    if(!joystickDirections.has(code)) setGameKeyCode(code,true);
-  }
-  joystickDirections=next;
-}
-
-function updateJoystick(event){
-  const rect=joystick.getBoundingClientRect();
-  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
-  const dx=event.clientX-cx,dy=event.clientY-cy;
-  const max=rect.width*.31;
-  const distance=Math.hypot(dx,dy)||1;
-  const scale=Math.min(1,max/distance);
-  const x=dx*scale,y=dy*scale;
-  joystickKnob.style.transform=`translate(${x}px,${y}px)`;
-  const dead=rect.width*.12;
-  const next=new Set();
-  if(distance>dead){
-    const angle=Math.atan2(dy,dx)*180/Math.PI;
-    if(angle>=-22.5&&angle<22.5) next.add(39);
-    else if(angle>=22.5&&angle<67.5){next.add(40);next.add(39)}
-    else if(angle>=67.5&&angle<112.5) next.add(40);
-    else if(angle>=112.5&&angle<157.5){next.add(40);next.add(37)}
-    else if(angle>=157.5||angle< -157.5) next.add(37);
-    else if(angle>=-157.5&&angle< -112.5){next.add(38);next.add(37)}
-    else if(angle>=-112.5&&angle< -67.5) next.add(38);
-    else {next.add(38);next.add(39)}
-  }
-  setJoystickDirections(next);
-}
-
-function resetJoystick(){
-  joystickPointerId=null;
-  joystickKnob.style.transform="translate(0,0)";
-  setJoystickDirections(new Set());
-}
-
-document.querySelectorAll(".mobile-controls button[data-key]").forEach(button=>{
-  button.addEventListener("pointerdown",event=>{
-    event.preventDefault();
-    try{button.setPointerCapture(event.pointerId)}catch{}
-    activeTouchPointers.set(event.pointerId,button);
-    setTouchKey(button,true);
-    haptic(8);
-    focusGameCanvas();
-  },{passive:false});
-  const release=event=>{
-    event.preventDefault();
-    const owner=activeTouchPointers.get(event.pointerId);
-    if(owner===button){
-      activeTouchPointers.delete(event.pointerId);
-      setTouchKey(button,false);
+    const codeFor = { up: KEYS.ArrowUp, down: KEYS.ArrowDown, left: KEYS.ArrowLeft, right: KEYS.ArrowRight };
+    for (const dir of Object.keys(codeFor)) {
+      const code = codeFor[dir];
+      const held = heldCounts.get(code) || 0;
+      if (wanted.has(dir) && !held) holdKey(code);
+      if (!wanted.has(dir) && held) releaseKey(code);
+      arms[dir].classList.toggle('on', wanted.has(dir));
     }
-  };
-  button.addEventListener("pointerup",release,{passive:false});
-  button.addEventListener("pointercancel",release,{passive:false});
-  button.addEventListener("lostpointercapture",release,{passive:false});
-});
-
-joystick.addEventListener("pointerdown",event=>{
-  event.preventDefault();
-  if(joystickPointerId!==null)return;
-  joystickPointerId=event.pointerId;
-  try{joystick.setPointerCapture(event.pointerId)}catch{}
-  updateJoystick(event);
-  haptic(5);
-  focusGameCanvas();
-},{passive:false});
-joystick.addEventListener("pointermove",event=>{
-  if(event.pointerId!==joystickPointerId)return;
-  event.preventDefault();
-  updateJoystick(event);
-},{passive:false});
-["pointerup","pointercancel","lostpointercapture"].forEach(type=>joystick.addEventListener(type,event=>{
-  if(event.pointerId===joystickPointerId)resetJoystick();
-},{passive:false}));
-
-window.addEventListener("blur",()=>{
-  for(const button of activeTouchPointers.values()) setTouchKey(button,false);
-  activeTouchPointers.clear();
-  touchKeyUsers.clear();
-  resetJoystick();
-});
-
-document.addEventListener("visibilitychange",()=>{
-  if(document.hidden){
-    for(const button of activeTouchPointers.values()) setTouchKey(button,false);
-    activeTouchPointers.clear();
-    resetJoystick();
   }
-});
 
-const saveNowButton=document.querySelector("#save-now");
+  function buttonPress(name) {
+    if (name === 'focus') {
+      focusLocked = !focusLocked;
+      buttons.focus.classList.toggle('on', focusLocked);
+      buttons.focus.setAttribute('aria-pressed', String(focusLocked));
+      if (focusLocked) buttonDefs.focus.forEach(holdKey);
+      else buttonDefs.focus.forEach(code => releaseKey(code));
+      haptic(10);
+      return;
+    }
+    buttons[name].classList.add('on');
+    buttonDefs[name].forEach(holdKey);
+    haptic(8);
+  }
+
+  function buttonRelease(name) {
+    if (name === 'focus') return;
+    buttons[name].classList.remove('on');
+    buttonDefs[name].forEach(code => releaseKey(code));
+  }
+
+  function beginPointer(e) {
+    if (!started || !runtimeReady) return;
+    const x = e.clientX, y = e.clientY;
+    const btn = hitButton(x, y);
+    const dpadHit = inDpad(x, y);
+    if (!btn && !dpadHit) return; // don't interfere with the rest of the page
+    e.preventDefault();
+    if (btn) {
+      pointers.set(e.pointerId, { owner: 'button', name: btn, x, y });
+      buttonPress(btn);
+    } else {
+      pointers.set(e.pointerId, { owner: 'dpad', x, y });
+      syncDpad();
+      haptic(5);
+    }
+    try { canvas.setPointerCapture?.(e.pointerId); } catch (_) {}
+    focusGameCanvas();
+  }
+
+  function movePointer(e) {
+    const p = pointers.get(e.pointerId);
+    if (!p) return;
+    e.preventDefault();
+    p.x = e.clientX; p.y = e.clientY;
+    if (p.owner === 'dpad') syncDpad();
+  }
+
+  function endPointer(e) {
+    const p = pointers.get(e.pointerId);
+    if (!p) return;
+    e.preventDefault();
+    pointers.delete(e.pointerId);
+    if (p.owner === 'button') buttonRelease(p.name);
+    syncDpad();
+  }
+
+  window.addEventListener('pointerdown', beginPointer, {capture:true, passive:false});
+  window.addEventListener('pointermove', movePointer, {capture:true, passive:false});
+  window.addEventListener('pointerup', endPointer, {capture:true, passive:false});
+  window.addEventListener('pointercancel', endPointer, {capture:true, passive:false});
+
+  // Keep native keyboard bindings exactly as the game already defines them.
+  // Touch only injects the same key codes through Module._th08_web_set_key_state.
+  document.addEventListener('contextmenu', e => {
+    if (started && (hitButton(e.clientX, e.clientY) || inDpad(e.clientX, e.clientY))) e.preventDefault();
+  }, {capture:true});
+  document.addEventListener('gesturestart', e => { if (started) e.preventDefault(); }, {passive:false, capture:true});
+  document.addEventListener('selectstart', e => { if (started) e.preventDefault(); }, {capture:true});
+  document.addEventListener('dragstart', e => { if (started) e.preventDefault(); }, {capture:true});
+  document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAllKeys(); });
+  window.addEventListener('blur', releaseAllKeys);
+  window.addEventListener('pagehide', releaseAllKeys);
+  window.addEventListener('resize', layout);
+
+  // Keep overlay hidden before the game starts, so file selectors and Start remain usable.
+  const syncOverlayVisibility = () => {
+    overlay.classList.toggle('mobile-controls-inert', !(started && runtimeReady));
+  };
+  syncOverlayVisibility();
+  const originalUpdateStartState = window.updateStartState;
+  // We cannot safely replace the existing function; instead observe start-state changes by polling briefly.
+  let lastStarted = started;
+  const observerTimer = setInterval(() => {
+    if (lastStarted !== started) { lastStarted = started; syncOverlayVisibility(); }
+    if (started && runtimeReady) syncOverlayVisibility();
+  }, 120);
+  window.addEventListener('beforeunload', () => clearInterval(observerTimer));
+})();
+</script>
+<script>const saveNowButton=document.querySelector("#save-now");
 async function saveBrowserData(message="Game data saved in this browser"){
   if(!gameFileSystemReady || !Module.th08SavePersistence?.available){
     statusElement.textContent="Browser save storage is unavailable on this device.";
@@ -396,18 +599,9 @@ const fullscreenButton=document.querySelector("#fullscreen");
 fullscreenButton.addEventListener("click",async()=>{
   const target=document.querySelector(".game");
   try{
-    if(!document.fullscreenElement){
-      const request=target.requestFullscreen?.bind(target) || document.documentElement.requestFullscreen?.bind(document.documentElement);
-      if(request) await request({navigationUI:"hide"}).catch(()=>request());
-    }else if(document.exitFullscreen){
-      await document.exitFullscreen();
-    }
-    requestAnimationFrame(()=>window.dispatchEvent(new Event("resize")));
+    if(!document.fullscreenElement && target.requestFullscreen) await target.requestFullscreen();
+    else if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
   }catch(error){appendLog("Fullscreen unavailable: "+error.message)}
-});
-
-document.addEventListener("fullscreenchange",()=>{
-  fullscreenButton.textContent=document.fullscreenElement?"Exit fullscreen":"Fullscreen";
 });
 
 if(!document.fullscreenEnabled && !document.querySelector(".game").requestFullscreen){
@@ -417,26 +611,10 @@ if(!document.fullscreenEnabled && !document.querySelector(".game").requestFullsc
 const landscapeButton=document.querySelector("#landscape");
 landscapeButton.addEventListener("click",async()=>{
   try{
-    if(screen.orientation?.lock){
-      await screen.orientation.lock("landscape");
-      landscapeButton.textContent="Landscape ✓";
-    }else{
-      appendLog("Landscape locking is not supported by this browser.");
-    }
-  }catch(error){
-    appendLog("Landscape lock is unavailable; rotate the device manually.");
-  }
+    if(screen.orientation?.lock) await screen.orientation.lock("landscape");
+    else appendLog("Landscape locking is not supported by this browser.");
+  }catch(error){appendLog("Landscape lock is unavailable; rotate the device manually.")}
 });
-
-function syncTouchMode(){
-  const coarse=matchMedia("(pointer:coarse)").matches;
-  const landscape=matchMedia("(orientation:landscape)").matches;
-  document.body.dataset.touchMode=coarse?"touch":"pointer";
-  document.body.dataset.orientation=landscape?"landscape":"portrait";
-}
-syncTouchMode();
-window.addEventListener("resize",syncTouchMode,{passive:true});
-window.addEventListener("orientationchange",()=>setTimeout(syncTouchMode,80),{passive:true});
 
 canvas.addEventListener("touchstart",event=>{
   event.preventDefault();
@@ -446,4 +624,4 @@ displayCanvas.addEventListener("touchstart",event=>{
   event.preventDefault();
   focusGameCanvas();
 },{passive:false});
-</script><script async src=th08-web.js></script></body></html>
+</script>
