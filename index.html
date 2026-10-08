@@ -94,7 +94,7 @@ code{color:#d6c8ff}
   h1{font-size:1.35rem}
 }
 @media (prefers-reduced-motion:reduce){
-  .joystick-knob,.dpad button,.actions button,.utility button{transition:none}
+  .joystick-knob,.dpad button,.actions button,.utility button,#touch-overlay-ref .touch-dpad{transition:none}
 }
 
 /* Touch overlay: isolated from the original UI and bootstrap.  It never
@@ -128,24 +128,32 @@ code{color:#d6c8ff}
   bottom: calc(env(safe-area-inset-bottom, 0px) + 6.5vmin);
   width: min(38vmin, 330px);
   height: min(38vmin, 330px);
-  opacity: .88;
-  filter: drop-shadow(0 .6vmin 1vmin rgba(0,0,0,.48));
+  /* The D-pad is intentionally ghosted so the game/bullets remain visible.
+     It still keeps its full hit area; only the visuals are transparent. */
+  opacity: .34;
+  filter: drop-shadow(0 .35vmin .7vmin rgba(0,0,0,.30));
+  transition: opacity .12s ease, filter .12s ease;
+}
+#touch-overlay-ref .touch-dpad.active {
+  opacity: .68;
+  filter: drop-shadow(0 .45vmin .9vmin rgba(0,0,0,.36));
 }
 #touch-overlay-ref .touch-dpad .body {
-  fill: rgba(24,20,30,.56);
+  fill: rgba(24,20,30,.20);
   stroke: #efe6d2;
-  stroke-width: 2.2;
+  stroke-opacity: .62;
+  stroke-width: 2.0;
   stroke-linejoin: round;
 }
 #touch-overlay-ref .touch-dpad .dimple {
   fill: none;
   stroke: #efe6d2;
-  stroke-opacity: .45;
-  stroke-width: 1.6;
+  stroke-opacity: .22;
+  stroke-width: 1.4;
 }
 #touch-overlay-ref .touch-dpad .tri {
   fill: #efe6d2;
-  fill-opacity: .72;
+  fill-opacity: .48;
 }
 #touch-overlay-ref .touch-dpad .arm {
   fill: #efe6d2;
@@ -825,6 +833,7 @@ displayCanvas.addEventListener("touchstart",event=>{
     buttons.focus.setAttribute('aria-pressed', 'false');
     label.textContent = '低速';
     for (const arm of Object.values(arms)) arm.classList.remove('on');
+    dpad.classList.remove('active');
   }
   function vibrate(ms) { try { navigator.vibrate?.(ms); } catch (_) {} }
 
@@ -890,6 +899,11 @@ displayCanvas.addEventListener("touchstart",event=>{
     else { buttons[name].classList.remove('on'); release(code); }
   }
 
+  function setDpadActive() {
+    const active = [...pointers.values()].some(p => p.owner === 'dpad');
+    dpad.classList.toggle('active', active);
+  }
+
   // Pointer handlers live ONLY on the touch controls. No document/window
   // touchstart listener means Start TH08 and file inputs retain native taps.
   dpad.addEventListener('pointerdown', e => {
@@ -897,6 +911,7 @@ displayCanvas.addEventListener("touchstart",event=>{
     e.preventDefault();
     dpad.setPointerCapture?.(e.pointerId);
     pointers.set(e.pointerId,{owner:'dpad',x:e.clientX,y:e.clientY});
+    setDpadActive();
     syncDpad();
   }, {passive:false});
   dpad.addEventListener('pointermove', e => {
@@ -905,7 +920,7 @@ displayCanvas.addEventListener("touchstart",event=>{
   }, {passive:false});
   const endDpad = e => {
     const p=pointers.get(e.pointerId); if(!p) return;
-    e.preventDefault(); pointers.delete(e.pointerId); syncDpad();
+    e.preventDefault(); pointers.delete(e.pointerId); setDpadActive(); syncDpad();
   };
   dpad.addEventListener('pointerup',endDpad,{passive:false});
   dpad.addEventListener('pointercancel',endDpad,{passive:false});
