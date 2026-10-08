@@ -1,0 +1,211 @@
+<!doctypehtml><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"name=viewport><title>TH08 Web — Imperishable Night</title><link href=th08-web-icon.png rel=icon type=image/png><style>
+:root{
+  color-scheme:dark;
+  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+  --panel:#12131d;
+  --panel-2:#0a0b12;
+  --line:#37334a;
+  --text:#f5f1ff;
+  --muted:#cbc5dc;
+  --accent:#a98cff;
+  --accent-2:#7d6bd4;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#080910;color:var(--text)}
+body{min-height:100vh;overscroll-behavior:none}
+button,input{font:inherit}
+main{display:grid;grid-template-columns:minmax(19rem,25rem) minmax(0,1fr);gap:1.25rem;align-items:start;max-width:1240px;margin:0 auto;padding:clamp(.75rem,2vw,2rem)}
+section{padding:1.25rem;border:1px solid var(--line);border-radius:1rem;background:var(--panel);box-shadow:0 1rem 3rem #0008}
+.identity{display:flex;gap:.85rem;align-items:center}
+.identity img{width:3.5rem;height:3.5rem;border-radius:.75rem}
+h1{margin:0 0 .35rem;font-size:1.55rem}
+h2{margin:0;color:#b8a6ff;font-size:.9rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+p{color:var(--muted);line-height:1.55}
+label{display:block;margin:1rem 0;font-weight:650}
+input{display:block;width:100%;margin-top:.45rem;color:#ded8ef}
+button{border:0;border-radius:.7rem;background:var(--accent);color:#100b1d;font-weight:850;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.45}
+#start{width:100%;padding:.8rem 1rem}
+#status{min-height:2.8rem;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:var(--panel-2);color:#ddd5f5}
+#log{max-height:13rem;overflow:auto;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:#08090e;color:#aaa3bc;font:.75rem/1.45 ui-monospace,monospace;white-space:pre-wrap}
+.game-shell{display:grid;grid-template-columns:minmax(126px,16vw) minmax(320px,640px) minmax(126px,16vw);align-items:center;justify-content:center;gap:clamp(.5rem,2vw,1.25rem);min-width:0}
+.game{display:grid;place-items:center;padding:clamp(.5rem,1.5vw,1.25rem);overflow:hidden;min-width:0}
+.canvas-wrap{grid-area:1/2;position:relative;width:min(640px,100%);aspect-ratio:4/3}
+canvas{position:absolute;inset:0;width:100%;height:100%;border:1px solid #302a44;background:#000;image-rendering:auto;outline:0;touch-action:none}
+#display-canvas{visibility:hidden}
+.game.bitmap-presentation #canvas{visibility:hidden}
+.game.bitmap-presentation #display-canvas{visibility:visible}
+.policy{font-size:.92rem}
+.controls{font-size:.86rem}
+code{color:#d6c8ff}
+.mobile-controls{display:contents;user-select:none;-webkit-user-select:none;touch-action:none}
+.control-cluster{display:grid;place-items:center;touch-action:none}
+.dpad{grid-column:1;display:grid;grid-template-columns:repeat(3,clamp(44px,5.5vw,58px));grid-template-rows:repeat(3,clamp(44px,5.5vw,58px));gap:clamp(3px,.6vw,6px)}
+.dpad button,.actions button,.utility button{
+  min-width:0;
+  min-height:0;
+  box-shadow:inset 0 -3px 0 #0004,0 5px 12px #0005;
+  transition:transform .06s ease,filter .06s ease,background .06s ease;
+  touch-action:none;
+}
+.dpad button{border-radius:.75rem;background:#2b2940;color:#e9e3ff;font-size:1.2rem}
+.dpad button[data-active="1"],.actions button[data-active="1"],.utility button[data-active="1"]{
+  transform:translateY(2px) scale(.97);
+  filter:brightness(1.12);
+  background:#6b58ba;
+}
+.d-up{grid-column:2;grid-row:1}.d-left{grid-column:1;grid-row:2}.d-right{grid-column:3;grid-row:2}.d-down{grid-column:2;grid-row:3}
+.d-center{grid-column:2;grid-row:2;border-radius:50%!important;background:#191827!important;box-shadow:none!important}
+.actions{grid-column:3;display:grid;grid-template-columns:repeat(2,clamp(58px,7vw,84px));grid-auto-rows:clamp(58px,7vw,84px);gap:clamp(.5rem,1vw,.85rem);align-content:center}
+.actions button{border-radius:50%;font-size:.78rem;letter-spacing:.04em}
+.actions .fire{background:#d9a2ff}.actions .bomb{background:#9fc4ff}.actions .focus{background:#a9d9b2}.actions .pause{background:#e5c28d}
+.touch-note{grid-column:2;text-align:center;color:#918aa9;font-size:.75rem;margin:.15rem 0 .35rem}
+.utility{grid-column:2;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
+.utility button{padding:.55rem .8rem;background:#201e2e;color:#ddd6ef;font-size:.78rem}
+.orientation-hint{display:none}
+@media (max-width:1060px){
+  main{grid-template-columns:1fr}
+}
+@media (pointer:coarse) and (max-width:900px){
+  main{padding:env(safe-area-inset-top) max(.6rem,env(safe-area-inset-right)) max(.75rem,env(safe-area-inset-bottom)) max(.6rem,env(safe-area-inset-left))}
+  .game-shell{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:.35rem}
+  .canvas-wrap{grid-area:1;width:min(640px,100%)}
+  .dpad{grid-column:1;grid-row:2}
+  .actions{grid-column:1;grid-row:3}
+  .touch-note{grid-column:1;grid-row:4}
+  .utility{grid-column:1;grid-row:5}
+  .game{padding:.35rem}
+  .orientation-hint{display:block;margin:.4rem 0 .8rem;padding:.65rem .8rem;border-radius:.6rem;background:#0c0d14;color:#aaa3bc;font-size:.8rem;text-align:center}
+  .desktop-only{display:none}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:600px){
+  main{grid-template-columns:minmax(180px,26vw) minmax(0,1fr);align-items:center}
+  main>section:first-child{max-height:calc(100vh - 1rem);overflow:auto}
+  .game-shell{grid-template-columns:minmax(118px,18vw) minmax(300px,640px) minmax(118px,18vw)}
+  .touch-note{font-size:.68rem}
+  .policy,.controls,#log{font-size:.78rem}
+}
+@media (max-width:560px){
+  main>section:first-child{padding:1rem}
+  .identity img{width:3rem;height:3rem}
+  h1{font-size:1.35rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .dpad button,.actions button,.utility button{transition:none}
+}
+</style></head><body><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots are stored separately in this browser so they survive a page reload. Clearing this site's browser data removes them.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><label>Game data <input accept=.dat,application/octet-stream id=game-data type=file></label> <label>Background music data <input accept=.dat,application/octet-stream id=bgm-data type=file></label> <button disabled id=start>Start TH08</button><div aria-live=polite id=status role=status>Loading the WebAssembly runtime…</div><pre aria-label="Runtime log"id=log></pre></section><section class=game>
+  <div class="game-shell" aria-label="Touhou mobile game controls">
+    <div class="canvas-wrap">
+      <canvas height=480 id=canvas oncontextmenu=event.preventDefault() tabindex=0 width=640></canvas>
+      <canvas height=480 id=display-canvas oncontextmenu=event.preventDefault() tabindex=0 width=640 aria-hidden=true></canvas>
+    </div>
+
+    <div class="mobile-controls" aria-label="Touch controls">
+      <div class="control-cluster dpad" aria-label="Movement">
+        <button type=button class=d-up data-key=ArrowUp aria-label="Move up">▲</button>
+        <button type=button class=d-left data-key=ArrowLeft aria-label="Move left">◀</button>
+        <button type=button class=d-center tabindex=-1 aria-hidden=true>✦</button>
+        <button type=button class=d-right data-key=ArrowRight aria-label="Move right">▶</button>
+        <button type=button class=d-down data-key=ArrowDown aria-label="Move down">▼</button>
+      </div>
+
+      <div class="control-cluster actions" aria-label="Actions">
+        <button type=button class=fire data-key=KeyZ aria-label="Fire or confirm">FIRE</button>
+        <button type=button class=bomb data-key=KeyX aria-label="Bomb or cancel">BOMB</button>
+        <button type=button class=focus data-key=ShiftLeft aria-label="Focus">FOCUS</button>
+        <button type=button class=pause data-key=Escape aria-label="Pause">PAUSE</button>
+      </div>
+
+      <div class=touch-note>Hold controls for continuous input · diagonals work with two fingers</div>
+
+      <div class=utility>
+        <button type=button id=fullscreen>Fullscreen</button>
+        <button type=button id=landscape>Landscape</button>
+      </div>
+    </div>
+  </div>
+</section></main><script>const gameInput=document.querySelector("#game-data"),bgmInput=document.querySelector("#bgm-data"),startButton=document.querySelector("#start"),statusElement=document.querySelector("#status"),logElement=document.querySelector("#log"),canvas=document.querySelector("#canvas"),displayCanvas=document.querySelector("#display-canvas"),gameSection=document.querySelector(".game"),useBitmapPresentation=navigator.userAgent.includes("Firefox/");let runtimeReady=!1,started=!1,gameFileSystemReady=!1;const persistentFiles=["th08.cfg","score.dat","score.txt"],persistentDirectories=["replay","backup","snapshot"],retailArchiveNames=new Set(["th08.dat","thbgm.dat"]);function appendLog(e){logElement.textContent+=`${e}\n`,logElement.scrollTop=logElement.scrollHeight}function selectedFiles(){return[gameInput.files[0],bgmInput.files[0]]}function selectionIsValid(){const[e,t]=selectedFiles();return"th08.dat"===e?.name.toLowerCase()&&"thbgm.dat"===t?.name.toLowerCase()}function updateStartState(){if(startButton.disabled=started||!runtimeReady||!crossOriginIsolated||!selectionIsValid(),crossOriginIsolated){if(!selectionIsValid()&&runtimeReady)statusElement.textContent="Select files named th08.dat and thbgm.dat to continue.";else if(!started&&runtimeReady){const[e,t]=selectedFiles();statusElement.textContent=`Ready: ${e.name} (${e.size.toLocaleString()} bytes), ${t.name} (${t.size.toLocaleString()} bytes).`}}else statusElement.textContent="This build requires cross-origin isolation. Serve it with the repository development server or equivalent COOP/COEP headers."}function ensureDirectory(e){try{Module.FS.mkdir(e)}catch(t){const a=Module.FS.stat(e).mode;if(!Module.FS.isDir(a))throw t}}function syncFileSystem(e){return new Promise(((t,a)=>{Module.FS.syncfs(e,(e=>e?a(e):t()))}))}function removeRetailArchivesFromSaveTree(e){let t=!1;for(const a of Module.FS.readdir(e)){if("."===a||".."===a)continue;const n=`${e}/${a}`,s=Module.FS.lstat(n).mode;retailArchiveNames.has(a.toLowerCase())?(Module.FS.isDir(s)?(removeTree(n),Module.FS.rmdir(n)):Module.FS.unlink(n),t=!0):Module.FS.isDir(s)&&(t=removeRetailArchivesFromSaveTree(n)||t)}return t}function removeTree(e){for(const t of Module.FS.readdir(e)){if("."===t||".."===t)continue;const a=`${e}/${t}`,n=Module.FS.lstat(a).mode;Module.FS.isDir(n)?(removeTree(a),Module.FS.rmdir(a)):Module.FS.unlink(a)}}function addSaveLink(e){const t=`/game/${e}`,a=`/save/${e}`;Module.FS.symlink(a,t)}function installBitmapPresentation(){if(!useBitmapPresentation)return;const e=displayCanvas.getContext("bitmaprenderer");if(!e)throw new Error("Firefox bitmap presentation is unavailable.");gameSection.classList.add("bitmap-presentation"),canvas.setAttribute("aria-hidden","true"),displayCanvas.removeAttribute("aria-hidden");for(const t of PThread.unusedWorkers){const a=t.onmessage;t.onmessage=n=>{const s=n.data?.th08WebFrame;s?e.transferFromImageBitmap(s):a.call(t,n)}}Module.th08BitmapPresentation=!0}function focusGameCanvas(){(useBitmapPresentation?displayCanvas:canvas).focus()}async function prepareGameFileSystem(){if(gameFileSystemReady)return;ensureDirectory("/game"),ensureDirectory("/save");for(const e of persistentDirectories)ensureDirectory(`/game/${e}`);let e=!1;const t=["/save",...persistentDirectories.map((e=>`/game/${e}`))];try{for(const e of t)Module.FS.mount(Module.IDBFS,{autoPersist:!0},e);await syncFileSystem(!0),e=!0}catch(e){console.error("Browser save persistence is unavailable; saves are session-only.",e),appendLog("th08-web: browser save persistence unavailable; using volatile saves")}t.reduce(((e,t)=>removeRetailArchivesFromSaveTree(t)||e),!1)&&appendLog("th08-web: removed forbidden retail archive entries from browser save storage");for(const e of persistentFiles)addSaveLink(e);Module.th08SavePersistence={available:e,mounts:t,files:[...persistentFiles],directories:[...persistentDirectories]},gameFileSystemReady=!0}gameInput.addEventListener("change",updateStartState),bgmInput.addEventListener("change",updateStartState);const gameKeyCodes=new Map([["ArrowUp",38],["ArrowDown",40],["ArrowLeft",37],["ArrowRight",39],["Numpad1",97],["Numpad2",98],["Numpad3",99],["Numpad4",100],["Numpad6",102],["Numpad7",103],["Numpad8",104],["Numpad9",105],["Home",36],["KeyP",80],["KeyD",68],["KeyZ",90],["KeyX",88],["ShiftLeft",16],["ShiftRight",16],["Escape",27],["ControlLeft",17],["ControlRight",17],["KeyQ",81],["KeyS",83],["KeyR",82],["Enter",13],["NumpadEnter",13]]);function updateGameKey(e,t){const a=gameKeyCodes.get(e.code);started&&void 0!==a&&(e.preventDefault(),Module._th08_web_set_key_state(a,t?1:0))}window.addEventListener("keydown",(e=>updateGameKey(e,!0))),window.addEventListener("keyup",(e=>updateGameKey(e,!1))),window.addEventListener("blur",(()=>{runtimeReady&&Module._th08_web_clear_key_state()})),canvas.addEventListener("pointerdown",focusGameCanvas),displayCanvas.addEventListener("pointerdown",focusGameCanvas);var Module={noInitialRun:!0,canvas:canvas,print:appendLog,printErr:appendLog,setStatus:e=>{e&&(statusElement.textContent=e)},onAbort:e=>{statusElement.textContent=`The game aborted: ${e}`},onRuntimeInitialized:()=>{installBitmapPresentation(),runtimeReady=!0,updateStartState()}};startButton.addEventListener("click",(async()=>{if(!selectionIsValid()||started)return;const[e,t]=selectedFiles();started=!0,updateStartState();try{statusElement.textContent="Loading local retail data and restoring browser-local saves…";const[a]=await Promise.all([e.arrayBuffer(),prepareGameFileSystem()]),n=new Uint8Array(a),s=Module._th08_web_allocate_game_data(n.byteLength);if(!s)throw new Error("Unable to allocate session memory for th08.dat.");Module.HEAPU8.set(n,s),Module.th08RetailFiles=[e,t],Module._th08_web_set_retail_file_sizes(e.size,t.size),Module.FS.chdir("/game"),Module.FS.writeFile("th08.dat",new Uint8Array(0)),Module.FS.writeFile("thbgm.dat",new Uint8Array(0)),focusGameCanvas(),statusElement.textContent="Starting TH08 from local retail data…",Module.callMain([])}catch(e){console.error(e),statusElement.textContent=`Unable to start TH08: ${e.message}`,started=!1,updateStartState()}}))</script><script>
+const touchKeyCodes=new Map([
+  ["ArrowUp",38],["ArrowDown",40],["ArrowLeft",37],["ArrowRight",39],
+  ["KeyZ",90],["KeyX",88],["ShiftLeft",16],["Escape",27]
+]);
+const activeTouchPointers=new Map();
+
+function setTouchKey(button, pressed){
+  const code=touchKeyCodes.get(button.dataset.key);
+  if(!code || !started || !runtimeReady) return;
+  Module._th08_web_set_key_state(code, pressed ? 1 : 0);
+  button.dataset.active=pressed ? "1" : "0";
+}
+
+document.querySelectorAll(".mobile-controls button[data-key]").forEach(button=>{
+  button.addEventListener("pointerdown",event=>{
+    event.preventDefault();
+    try{button.setPointerCapture(event.pointerId)}catch{}
+    activeTouchPointers.set(event.pointerId,button);
+    setTouchKey(button,true);
+    if(navigator.vibrate) navigator.vibrate(8);
+    focusGameCanvas();
+  },{passive:false});
+
+  const release=event=>{
+    event.preventDefault();
+    const owner=activeTouchPointers.get(event.pointerId);
+    if(owner===button){
+      activeTouchPointers.delete(event.pointerId);
+      setTouchKey(button,false);
+    }
+  };
+  button.addEventListener("pointerup",release,{passive:false});
+  button.addEventListener("pointercancel",release,{passive:false});
+  button.addEventListener("lostpointercapture",event=>{
+    const owner=activeTouchPointers.get(event.pointerId);
+    if(owner===button){
+      activeTouchPointers.delete(event.pointerId);
+      setTouchKey(button,false);
+    }
+  });
+});
+
+window.addEventListener("blur",()=>{
+  for(const button of activeTouchPointers.values()) setTouchKey(button,false);
+  activeTouchPointers.clear();
+});
+
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){
+    for(const button of activeTouchPointers.values()) setTouchKey(button,false);
+    activeTouchPointers.clear();
+  }
+});
+
+const fullscreenButton=document.querySelector("#fullscreen");
+fullscreenButton.addEventListener("click",async()=>{
+  const target=document.querySelector(".game");
+  try{
+    if(!document.fullscreenElement && target.requestFullscreen) await target.requestFullscreen();
+    else if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+  }catch(error){appendLog("Fullscreen unavailable: "+error.message)}
+});
+
+if(!document.fullscreenEnabled && !document.querySelector(".game").requestFullscreen){
+  fullscreenButton.hidden=true;
+}
+
+const landscapeButton=document.querySelector("#landscape");
+landscapeButton.addEventListener("click",async()=>{
+  try{
+    if(screen.orientation?.lock) await screen.orientation.lock("landscape");
+    else appendLog("Landscape locking is not supported by this browser.");
+  }catch(error){appendLog("Landscape lock is unavailable; rotate the device manually.")}
+});
+
+canvas.addEventListener("touchstart",event=>{
+  event.preventDefault();
+  focusGameCanvas();
+},{passive:false});
+displayCanvas.addEventListener("touchstart",event=>{
+  event.preventDefault();
+  focusGameCanvas();
+},{passive:false});
+</script><script async src=th08-web.js></script></body></html>
