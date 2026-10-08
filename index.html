@@ -246,6 +246,92 @@ code{color:#d6c8ff}
   #touch-overlay-ref .touch-dpad .arm,
   #touch-overlay-ref .touch-btn { transition:none; }
 }
+
+
+/* Fullscreen presentation: turn the whole browser surface into the native
+   TH08-style 4:3 game view. The HTML shell goes fullscreen, while the game
+   canvas remains a strict 640x480 aspect ratio and scales to the largest
+   4:3 rectangle that fits the device. */
+html:fullscreen,
+html:-webkit-full-screen {
+  background:#000;
+  width:100%;
+  height:100%;
+}
+html:fullscreen body,
+html:-webkit-full-screen body {
+  margin:0;
+  width:100%;
+  height:100%;
+  min-height:100%;
+  overflow:hidden;
+  background:#000;
+}
+html:fullscreen main,
+html:-webkit-full-screen main {
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:none;
+  margin:0;
+  padding:0;
+  background:#000;
+}
+html:fullscreen main > section:first-child,
+html:-webkit-full-screen main > section:first-child {
+  display:none;
+}
+html:fullscreen .game,
+html:-webkit-full-screen .game {
+  width:100%;
+  height:100%;
+  min-height:100dvh;
+  padding:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:#000;
+  overflow:hidden;
+}
+html:fullscreen .game-shell,
+html:-webkit-full-screen .game-shell {
+  position:relative;
+  display:block;
+  width:100%;
+  height:100%;
+  min-height:100%;
+}
+html:fullscreen .canvas-wrap,
+html:-webkit-full-screen .canvas-wrap {
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:min(100dvw, calc(100dvh * 4 / 3));
+  height:min(100dvh, calc(100dvw * 3 / 4));
+  max-width:none;
+  max-height:none;
+  aspect-ratio:4 / 3;
+  padding:0;
+  margin:0;
+}
+html:fullscreen canvas,
+html:-webkit-full-screen canvas {
+  border:0;
+  border-radius:0;
+}
+html:fullscreen .touch-note,
+html:-webkit-full-screen .touch-note,
+html:fullscreen .game-shell > .utility,
+html:-webkit-full-screen .game-shell > .utility {
+  display:none;
+}
+html:fullscreen #touch-overlay-ref,
+html:-webkit-full-screen #touch-overlay-ref {
+  position:fixed;
+  inset:0;
+  z-index:999999;
+}
 </style></head><body><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots can be stored in this browser and restored on reload. Use <strong>Save now</strong> before closing the tab. Clearing this site's browser data removes them. The game's running state itself is not a mid-stage save state.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><div class=account-panel>
   <div class=account-row>
     <strong>Cloud save</strong>
@@ -580,17 +666,34 @@ window.addEventListener("pagehide",()=>{
 });
 
 const fullscreenButton=document.querySelector("#fullscreen");
+function refreshFullscreenButton(){
+  const active=!!document.fullscreenElement;
+  fullscreenButton.textContent=active?"Exit fullscreen":"Fullscreen";
+  fullscreenButton.setAttribute("aria-pressed",String(active));
+}
 fullscreenButton.addEventListener("click",async()=>{
-  const target=document.querySelector(".game");
   try{
-    if(!document.fullscreenElement && target.requestFullscreen) await target.requestFullscreen();
-    else if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
-  }catch(error){appendLog("Fullscreen unavailable: "+error.message)}
+    if(!document.fullscreenElement){
+      const root=document.documentElement;
+      if(!root.requestFullscreen) throw new Error("This browser does not expose the Fullscreen API.");
+      try{
+        await root.requestFullscreen({navigationUI:"hide"});
+      }catch{
+        await root.requestFullscreen();
+      }
+    }else if(document.exitFullscreen){
+      await document.exitFullscreen();
+    }
+  }catch(error){
+    appendLog("Fullscreen unavailable: "+error.message);
+  }
+  refreshFullscreenButton();
 });
-
-if(!document.fullscreenEnabled && !document.querySelector(".game").requestFullscreen){
+document.addEventListener("fullscreenchange",refreshFullscreenButton);
+if(!document.fullscreenEnabled && !document.documentElement.requestFullscreen){
   fullscreenButton.hidden=true;
 }
+refreshFullscreenButton();
 
 const landscapeButton=document.querySelector("#landscape");
 landscapeButton.addEventListener("click",async()=>{
