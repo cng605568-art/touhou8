@@ -1,101 +1,24 @@
-<!doctypehtml><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"name=viewport><title>TH08 Web — Imperishable Night</title><link href=th08-web-icon.png rel=icon type=image/png><style>
-:root{
-  color-scheme:dark;
-  font-family:Inter,ui-sans-serif,system-ui,sans-serif;
-  --panel:#12131d;
-  --panel-2:#0a0b12;
-  --line:#37334a;
-  --text:#f5f1ff;
-  --muted:#cbc5dc;
-  --accent:#a98cff;
-  --accent-2:#7d6bd4;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;background:#080910;color:var(--text)}
-body{min-height:100vh;overscroll-behavior:none}
-button,input{font:inherit}
-main{display:grid;grid-template-columns:minmax(19rem,25rem) minmax(0,1fr);gap:1.25rem;align-items:start;max-width:1240px;margin:0 auto;padding:clamp(.75rem,2vw,2rem)}
-section{padding:1.25rem;border:1px solid var(--line);border-radius:1rem;background:var(--panel);box-shadow:0 1rem 3rem #0008}
-.identity{display:flex;gap:.85rem;align-items:center}
-.identity img{width:3.5rem;height:3.5rem;border-radius:.75rem}
-h1{margin:0 0 .35rem;font-size:1.55rem}
-h2{margin:0;color:#b8a6ff;font-size:.9rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-p{color:var(--muted);line-height:1.55}
-label{display:block;margin:1rem 0;font-weight:650}
-input{display:block;width:100%;margin-top:.45rem;color:#ded8ef}
-button{border:0;border-radius:.7rem;background:var(--accent);color:#100b1d;font-weight:850;cursor:pointer}
-button:disabled{cursor:not-allowed;opacity:.45}
-#start{width:100%;padding:.8rem 1rem}
-#status{min-height:2.8rem;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:var(--panel-2);color:#ddd5f5}
-#log{max-height:13rem;overflow:auto;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:#08090e;color:#aaa3bc;font:.75rem/1.45 ui-monospace,monospace;white-space:pre-wrap}
-.game-shell{display:grid;grid-template-columns:minmax(126px,16vw) minmax(320px,640px) minmax(126px,16vw);align-items:center;justify-content:center;gap:clamp(.5rem,2vw,1.25rem);min-width:0}
-.game{display:grid;place-items:center;padding:clamp(.5rem,1.5vw,1.25rem);overflow:hidden;min-width:0}
-.canvas-wrap{grid-area:1/2;position:relative;width:min(640px,100%);aspect-ratio:4/3}
-canvas{position:absolute;inset:0;width:100%;height:100%;border:1px solid #302a44;background:#000;image-rendering:auto;outline:0;touch-action:none}
-#display-canvas{visibility:hidden}
-.game.bitmap-presentation #canvas{visibility:hidden}
-.game.bitmap-presentation #display-canvas{visibility:visible}
-.policy{font-size:.92rem}
-.controls{font-size:.86rem}
-code{color:#d6c8ff}
-.mobile-controls{display:contents;user-select:none;-webkit-user-select:none;touch-action:none}
-.control-cluster{display:grid;place-items:center;touch-action:none}
-.joystick{grid-column:1;position:relative;width:clamp(154px,20vw,210px);height:clamp(154px,20vw,210px);touch-action:none}
-.joystick-ring{width:100%;height:100%;border-radius:50%;padding:10%;background:#181827;box-shadow:inset 0 0 0 2px #3b3750,0 8px 20px #0007}
-.joystick-base{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#504b70,#29263c 55%,#171621 100%);box-shadow:inset 0 7px 16px #0006}
-.joystick-knob{position:absolute;left:50%;top:50%;width:44%;height:44%;margin:-22% 0 0 -22%;border-radius:50%;background:radial-gradient(circle at 35% 25%,#bcaeff,#7567a8 55%,#4c4477 100%);box-shadow:0 7px 14px #0008,inset 0 2px 0 #fff5;transform:translate(0,0);transition:transform .05s ease}
-.joystick-label{position:absolute;inset:auto 0 4px;text-align:center;color:#ddd6ef;font-size:.72rem;font-weight:900;letter-spacing:.14em;pointer-events:none}
-.actions{grid-column:3;display:grid;grid-template-columns:repeat(2,clamp(80px,8.5vw,112px));grid-auto-rows:clamp(80px,8.5vw,112px);gap:clamp(.65rem,1.25vw,1rem);align-content:center}
-.actions button{border-radius:50%;font-size:clamp(.85rem,1vw,1rem);letter-spacing:.05em}
-.actions .fire{background:#d9a2ff}.actions .bomb{background:#9fc4ff}.actions .focus{background:#a9d9b2}.actions .pause{background:#e5c28d}
-.dpad,.d-up,.d-left,.d-right,.d-down,.d-center{display:none}
-.dpad button,.actions button,.utility button{min-width:0;min-height:0;box-shadow:inset 0 -4px 0 #0004,0 6px 14px #0006;transition:transform .06s ease,filter .06s ease,background .06s ease;touch-action:none}
-.actions button[data-active="1"],.utility button[data-active="1"]{transform:translateY(2px) scale(.97);filter:brightness(1.12)}
-.actions button[data-active="1"]{box-shadow:inset 0 -2px 0 #0004,0 3px 9px #0006}
-.touch-note{grid-column:2;text-align:center;color:#918aa9;font-size:.75rem;margin:.15rem 0 .35rem}
-.utility{grid-column:2;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}
-.utility button{padding:.6rem .9rem;background:#201e2e;color:#ddd6ef;font-size:.82rem}
-#save-now{background:#39324f;color:#efe9ff;font-weight:900}
-.account-panel{margin:1rem 0 0;padding:.85rem;border-radius:.7rem;background:#0c0d14;border:1px solid #2d2940}
-.account-row{display:flex;gap:.6rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.account-name{font-size:.82rem;color:#d9d2e9;overflow:hidden;text-overflow:ellipsis}
-#google-login{width:100%;padding:.75rem 1rem;background:#fff;color:#202124;border:1px solid #dadce0;font-weight:800}
-#google-logout{padding:.5rem .75rem;background:#28243a;color:#ddd6ef;font-size:.78rem}
-#cloud-sync{padding:.5rem .75rem;background:#4b3c78;color:#fff;font-size:.78rem}
-.cloud-status{margin:.55rem 0 0;font-size:.76rem;color:#9f97b4}
-.orientation-hint{display:none}
-@media (max-width:1060px){
-  main{grid-template-columns:1fr}
-}
+<!doctypehtml><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1" name=viewport><meta name="theme-color" content="#070811"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>TH08 Web — Imperishable Night</title><link href=th08-web-icon.png rel=icon type=image/png><style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--panel:#12131d;--panel-2:#0a0b12;--line:#37334a;--text:#f5f1ff;--muted:#cbc5dc;--accent:#a98cff;--accent-2:#7d6bd4;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:#080910;color:var(--text)}html{background:#080910}body{min-height:100vh;min-height:100dvh;overscroll-behavior:none;overflow-x:hidden}button,input{font:inherit}button{touch-action:manipulation}
+main{display:grid;grid-template-columns:minmax(19rem,25rem) minmax(0,1fr);gap:1.25rem;align-items:start;max-width:1400px;margin:0 auto;padding:clamp(.75rem,2vw,2rem)}
+section{padding:1.25rem;border:1px solid var(--line);border-radius:1rem;background:var(--panel);box-shadow:0 1rem 3rem #0008}.identity{display:flex;gap:.85rem;align-items:center}.identity img{width:3.5rem;height:3.5rem;border-radius:.75rem}h1{margin:0 0 .35rem;font-size:1.55rem}h2{margin:0;color:#b8a6ff;font-size:.9rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}p{color:var(--muted);line-height:1.55}label{display:block;margin:1rem 0;font-weight:650}input{display:block;width:100%;margin-top:.45rem;color:#ded8ef}button{border:0;border-radius:.7rem;background:var(--accent);color:#100b1d;font-weight:850;cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}#start{width:100%;padding:.9rem 1rem;min-height:3rem}
+#status{min-height:2.8rem;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:var(--panel-2);color:#ddd5f5}#log{max-height:13rem;overflow:auto;margin:1rem 0 0;padding:.8rem;border-radius:.5rem;background:#08090e;color:#aaa3bc;font:.75rem/1.45 ui-monospace,monospace;white-space:pre-wrap}
+.game{display:grid;min-width:0;min-height:0;padding:.65rem}.game-shell{display:grid;grid-template-columns:minmax(126px,16vw) minmax(320px,640px) minmax(126px,16vw);grid-template-areas:"joystick canvas actions" "none note none" "none utility none";align-items:center;justify-content:center;gap:.4rem clamp(.5rem,2vw,1.25rem);width:100%;min-width:0}.canvas-wrap{grid-area:canvas;position:relative;width:min(640px,100%);max-width:100%;aspect-ratio:4/3;justify-self:center;overflow:hidden;border-radius:.6rem;background:#000;box-shadow:0 1rem 2.5rem #0009}
+canvas{position:absolute;inset:0;width:100%;height:100%;border:1px solid #302a44;background:#000;image-rendering:auto;outline:0;touch-action:none;user-select:none;-webkit-user-select:none}#display-canvas{visibility:hidden}.game.bitmap-presentation #canvas{visibility:hidden}.game.bitmap-presentation #display-canvas{visibility:visible}.policy{font-size:.92rem}.controls{font-size:.86rem}code{color:#d6c8ff}
+.mobile-controls{display:contents;user-select:none;-webkit-user-select:none}.touch-deck{display:contents}.control-cluster{display:grid;place-items:center;touch-action:none}.joystick{grid-area:joystick;position:relative;width:clamp(170px,21vw,230px);height:clamp(170px,21vw,230px);touch-action:none;justify-self:center;filter:drop-shadow(0 .55rem 1rem #0007)}
+.joystick-ring{width:100%;height:100%;border-radius:50%;padding:9%;background:#171725;box-shadow:inset 0 0 0 2px #3b3750,0 8px 20px #0007}.joystick-base{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#504b70,#29263c 55%,#171621 100%);box-shadow:inset 0 7px 16px #0006}.joystick-base::before{content:"";position:absolute;inset:9%;border:2px solid #7d72a3;border-radius:50%;opacity:.28}.joystick-knob{position:absolute;left:50%;top:50%;width:43%;height:43%;margin:-21.5% 0 0 -21.5%;border-radius:50%;background:radial-gradient(circle at 35% 25%,#c5b8ff,#7567a8 55%,#4c4477 100%);box-shadow:0 7px 14px #0008,inset 0 2px 0 #fff5;transform:translate(0,0);transition:transform .035s ease}.joystick-label{position:absolute;inset:auto 0 3px;text-align:center;color:#eee9fb;font-size:.72rem;font-weight:950;letter-spacing:.16em;pointer-events:none;text-shadow:0 2px 4px #000}
+.actions{grid-area:actions;display:grid;grid-template-columns:repeat(2,minmax(74px,clamp(84px,8.7vw,116px)));grid-auto-rows:minmax(74px,clamp(84px,8.7vw,116px));gap:clamp(.65rem,1.25vw,1rem);align-content:center;justify-content:center}.actions button{min-width:0;min-height:0;border-radius:50%;font-size:clamp(.82rem,1vw,1rem);letter-spacing:.05em;box-shadow:inset 0 -5px 0 #0004,0 7px 16px #0007}.actions .fire{background:#e0a7ff}.actions .bomb{background:#9fc4ff;transform:scale(1.06)}.actions .focus{background:#a9d9b2}.actions .pause{background:#e5c28d}.actions .focus small{display:block;margin-top:.15rem;font-size:.68em;font-weight:900;letter-spacing:.04em;opacity:.78}.actions button[data-active="1"]{transform:translateY(2px) scale(.98);filter:brightness(1.12);box-shadow:inset 0 -2px 0 #0004,0 3px 9px #0006}.actions .bomb[data-active="1"]{transform:translateY(2px) scale(1.02)}
+.touch-note{grid-area:note;text-align:center;color:#aaa3bc;font-size:.74rem;margin:.15rem 0}.utility{grid-area:utility;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap}.utility button{padding:.65rem .9rem;min-height:2.7rem;background:#201e2e;color:#ddd6ef;font-size:.82rem;box-shadow:inset 0 -3px 0 #0004,0 4px 10px #0005}#save-now{background:#39324f;color:#efe9ff;font-weight:900}
+.account-panel{margin:1rem 0 0;padding:.85rem;border-radius:.7rem;background:#0c0d14;border:1px solid #2d2940}.account-row{display:flex;gap:.6rem;align-items:center;justify-content:space-between;flex-wrap:wrap}.account-name{font-size:.82rem;color:#d9d2e9;overflow:hidden;text-overflow:ellipsis}#google-login{width:100%;padding:.75rem 1rem;background:#fff;color:#202124;border:1px solid #dadce0;font-weight:800}#google-logout{padding:.5rem .75rem;background:#28243a;color:#ddd6ef;font-size:.78rem}#cloud-sync{padding:.5rem .75rem;background:#4b3c78;color:#fff;font-size:.78rem}.cloud-status{margin:.55rem 0 0;font-size:.76rem;color:#9f97b4}.orientation-hint{display:none}
+@media (max-width:1100px){main{grid-template-columns:1fr}}
 @media (pointer:coarse) and (max-width:900px){
-  main{padding:env(safe-area-inset-top) max(.6rem,env(safe-area-inset-right)) max(.75rem,env(safe-area-inset-bottom)) max(.6rem,env(safe-area-inset-left))}
-  .game-shell{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:.35rem}
-  .canvas-wrap{grid-area:1;width:min(640px,100%)}
-  .joystick{grid-column:1;grid-row:2;width:clamp(164px,42vw,210px);height:clamp(164px,42vw,210px)}
-  .actions{grid-column:1;grid-row:3;grid-template-columns:repeat(2,clamp(96px,25vw,126px));grid-auto-rows:clamp(96px,25vw,126px);gap:.8rem}
-  .actions button{font-size:clamp(.95rem,3vw,1.1rem)}
-  .touch-note{grid-column:1;grid-row:4}
-  .utility{grid-column:1;grid-row:5}
-  .utility button{padding:.75rem 1rem;font-size:.9rem}
-  .game{padding:.35rem}
-  .orientation-hint{display:block;margin:.4rem 0 .8rem;padding:.65rem .8rem;border-radius:.6rem;background:#0c0d14;color:#aaa3bc;font-size:.8rem;text-align:center}
-  .desktop-only{display:none}
-}
-@media (pointer:coarse) and (orientation:landscape) and (max-height:600px){
-  main{grid-template-columns:minmax(180px,26vw) minmax(0,1fr);align-items:center}
-  main>section:first-child{max-height:calc(100vh - 1rem);overflow:auto}
-  .game-shell{grid-template-columns:minmax(150px,22vw) minmax(300px,640px) minmax(150px,22vw)}
-  .touch-note{font-size:.68rem}
-  .policy,.controls,#log{font-size:.78rem}
-}
-@media (max-width:560px){
-  main>section:first-child{padding:1rem}
-  .identity img{width:3rem;height:3rem}
-  h1{font-size:1.35rem}
-}
-@media (prefers-reduced-motion:reduce){
-  .joystick-knob,.dpad button,.actions button,.utility button{transition:none}
-}
+ body{background:#070811}main{display:block;width:100%;max-width:none;margin:0;padding:var(--safe-top) max(.55rem,var(--safe-right)) max(.75rem,var(--safe-bottom)) max(.55rem,var(--safe-left))}main>section:first-child{margin-bottom:.65rem;padding:1rem}.game{padding:.35rem 0 0;border-radius:0;border:0;box-shadow:none;background:transparent}.game-shell{grid-template-columns:minmax(0,1fr);grid-template-areas:"canvas" "touchdeck" "note" "utility";gap:.45rem;justify-items:center}.canvas-wrap{width:100%;border-radius:.75rem}.mobile-controls{display:block;width:100%}.touch-deck{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;width:100%;gap:.55rem;margin:.1rem 0 .15rem;padding:.1rem 0}.joystick{grid-area:auto;width:min(43vw,230px);height:min(43vw,230px)}.actions{grid-area:auto;width:100%;grid-template-columns:repeat(2,minmax(82px,1fr));grid-auto-rows:minmax(82px,clamp(82px,22vw,122px));gap:clamp(.5rem,2vw,.8rem)}.actions button{width:100%;height:100%;font-size:clamp(.95rem,3.5vw,1.15rem)}.actions .bomb{transform:scale(1.08)}.actions .bomb[data-active="1"]{transform:translateY(2px) scale(1.04)}.touch-note{grid-area:note;width:100%;font-size:.72rem;line-height:1.35;padding:0 .5rem}.utility{grid-area:utility;width:100%;gap:.45rem}.utility button{flex:1 1 0;min-width:0;min-height:3rem;padding:.7rem .75rem}.orientation-hint{display:block;margin:.55rem 0 .8rem;padding:.7rem .8rem;border-radius:.65rem;background:#0c0d14;color:#aaa3bc;font-size:.8rem;text-align:center}.desktop-only{display:none}#status{font-size:.9rem}#log{max-height:10rem}}
+@media (pointer:coarse) and (orientation:landscape){
+ html,body{background:#05060b}main{padding:var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left)}main>section:first-child{display:none}.game{min-height:100svh;min-height:100dvh;padding:0;border:0;background:transparent;box-shadow:none}.game-shell{position:relative;min-height:100svh;min-height:100dvh;width:100%;grid-template-columns:minmax(126px,24vw) minmax(300px,64vw) minmax(126px,24vw);grid-template-areas:"joystick canvas actions" "note note note" "utility utility utility";align-items:center;gap:.15rem;overflow:hidden}.canvas-wrap{width:min(64vw,calc((100svh - 2.5rem)*4/3));max-width:680px;max-height:calc(100dvh - 2.6rem)}.mobile-controls{display:contents}.touch-deck{display:contents}.joystick{grid-area:joystick;width:min(24vw,240px);height:min(24vw,240px)}.actions{grid-area:actions;grid-template-columns:repeat(2,minmax(82px,10vw));grid-auto-rows:minmax(82px,10vw);gap:clamp(.45rem,1vw,.8rem)}.actions button{font-size:clamp(.9rem,1.4vw,1.1rem)}.touch-note{position:absolute;left:50%;bottom:calc(var(--safe-bottom) + .25rem);transform:translateX(-50%);width:max-content;max-width:70vw;z-index:4;padding:.25rem .65rem;border-radius:999px;background:#05060bcc;backdrop-filter:blur(8px)}.utility{position:absolute;top:calc(var(--safe-top) + .35rem);right:calc(var(--safe-right) + .45rem);z-index:5;width:auto;flex-wrap:nowrap}.utility button{flex:0 0 auto;min-height:2.45rem;padding:.5rem .7rem;font-size:.75rem;opacity:.9}}
+@media (pointer:coarse) and (orientation:portrait) and (max-width:560px){.actions{grid-auto-rows:minmax(92px,26vw)}.actions button{font-size:clamp(1rem,4.2vw,1.2rem)}.joystick{width:min(46vw,230px);height:min(46vw,230px)}.utility button{font-size:.82rem}}
+@media (pointer:coarse) and (max-height:500px) and (orientation:landscape){.joystick{width:min(29vh,200px);height:min(29vh,200px)}.actions{grid-auto-rows:minmax(68px,18vh)}.actions button{font-size:.85rem}}
+@media (prefers-reduced-motion:reduce){.joystick-knob,.actions button,.utility button{transition:none}}
 </style></head><body><main><section><div class=identity><img alt="TH08 Web icon"src=th08-web-icon.png><div><h2>Source-built browser port</h2><h1>Imperishable Night</h1></div></div><p class=policy>Select <code>th08.dat</code> and <code>thbgm.dat</code> from a legally obtained TH08 installation. The game archive is copied only into volatile session memory, while the music archive is range-read from its browser <code>File</code> object. Neither file is uploaded, bundled, or persisted by this page.</p><p class=policy>Settings, scores, replays, backups, and snapshots can be stored in this browser and restored on reload. Use <strong>Save now</strong> before closing the tab. Clearing this site's browser data removes them. The game's running state itself is not a mid-stage save state.</p><p class="orientation-hint">Landscape is recommended for the most comfortable play. Your TH08 data stays in this browser session.</p><p class="controls desktop-only"><strong>Keyboard:</strong> arrow keys move, <code>Z</code> confirms/fires, <code>X</code> cancels/bombs, <code>Shift</code> focuses, and <code>Esc</code> pauses.</p><div class=account-panel>
   <div class=account-row>
     <strong>Cloud save</strong>
@@ -116,23 +39,25 @@ code{color:#d6c8ff}
     </div>
 
     <div class="mobile-controls" aria-label="Touch controls">
-      <div class="control-cluster joystick" id=joystick aria-label="Movement joystick">
-        <div class=joystick-ring>
-          <div class=joystick-base>
-            <div class=joystick-knob id=joystick-knob></div>
+      <div class="touch-deck">
+        <div class="control-cluster joystick" id=joystick aria-label="Movement joystick">
+          <div class=joystick-ring>
+            <div class=joystick-base>
+              <div class=joystick-knob id=joystick-knob></div>
+            </div>
           </div>
+          <span class=joystick-label>MOVE</span>
         </div>
-        <span class=joystick-label>MOVE</span>
+
+        <div class="control-cluster actions" aria-label="Actions">
+          <button type=button class=fire data-key=KeyZ aria-label="Fire or confirm">FIRE</button>
+          <button type=button class=bomb data-key=KeyX aria-label="Bomb or skill">BOMB</button>
+          <button type=button class="focus combo-z-shift" aria-label="Focus (Z + Shift)">FOCUS<br><small>Z + SHIFT</small></button>
+          <button type=button class=pause data-key=Escape aria-label="Pause">PAUSE</button>
+        </div>
       </div>
 
-      <div class="control-cluster actions" aria-label="Actions">
-        <button type=button class=fire data-key=KeyZ aria-label="Fire or confirm">FIRE</button>
-        <button type=button class=bomb data-key=KeyX aria-label="Bomb or cancel">BOMB</button>
-        <button type=button class=focus data-key=ShiftLeft aria-label="Focus">FOCUS</button>
-        <button type=button class=pause data-key=Escape aria-label="Pause">PAUSE</button>
-      </div>
-
-      <div class=touch-note>Virtual stick for movement · hold FIRE and FOCUS together</div>
+      <div class=touch-note>Left thumb: move · right thumb: FIRE / BOMB / FOCUS · FOCUS sends Z + SHIFT</div>
 
       <div class=utility>
         <button type=button id=fullscreen>Fullscreen</button>
@@ -151,18 +76,52 @@ const touchKeyCodes=new Map([
   ["KeyZ",90],["KeyX",88],["ShiftLeft",16],["Escape",27]
 ]);
 const activeTouchPointers=new Map();
+const touchKeyUsers=new Map();
 let joystickPointerId=null;
 let joystickDirections=new Set();
+let lastVibrateAt=0;
+const touchRoot=document.querySelector(".mobile-controls");
+
+touchRoot?.addEventListener("contextmenu",event=>event.preventDefault());
+touchRoot?.addEventListener("dragstart",event=>event.preventDefault());
+
+function haptic(ms=8){
+  const now=performance.now();
+  if(navigator.vibrate && now-lastVibrateAt>35){
+    lastVibrateAt=now;
+    navigator.vibrate(ms);
+  }
+}
 
 function setGameKeyCode(code,pressed){
   if(!started || !runtimeReady) return;
   Module._th08_web_set_key_state(code,pressed?1:0);
 }
 
-function setTouchKey(button,pressed){
+function touchCodesForButton(button){
+  if(button.classList.contains("combo-z-shift")) return [90,16];
   const code=touchKeyCodes.get(button.dataset.key);
-  if(!code || !started || !runtimeReady) return;
-  setGameKeyCode(code,pressed);
+  return code ? [code] : [];
+}
+
+function setTouchKey(button,pressed){
+  const codes=touchCodesForButton(button);
+  if(!codes.length || !started || !runtimeReady) return;
+  for(const code of codes){
+    const users=touchKeyUsers.get(code)||0;
+    if(pressed){
+      touchKeyUsers.set(code,users+1);
+      if(users===0) setGameKeyCode(code,true);
+    }else if(users>0){
+      const next=users-1;
+      if(next===0){
+        touchKeyUsers.delete(code);
+        setGameKeyCode(code,false);
+      }else{
+        touchKeyUsers.set(code,next);
+      }
+    }
+  }
   button.dataset.active=pressed?"1":"0";
 }
 
@@ -213,7 +172,7 @@ document.querySelectorAll(".mobile-controls button[data-key]").forEach(button=>{
     try{button.setPointerCapture(event.pointerId)}catch{}
     activeTouchPointers.set(event.pointerId,button);
     setTouchKey(button,true);
-    if(navigator.vibrate) navigator.vibrate(8);
+    haptic(8);
     focusGameCanvas();
   },{passive:false});
   const release=event=>{
@@ -226,6 +185,7 @@ document.querySelectorAll(".mobile-controls button[data-key]").forEach(button=>{
   };
   button.addEventListener("pointerup",release,{passive:false});
   button.addEventListener("pointercancel",release,{passive:false});
+  button.addEventListener("lostpointercapture",release,{passive:false});
 });
 
 joystick.addEventListener("pointerdown",event=>{
@@ -234,6 +194,7 @@ joystick.addEventListener("pointerdown",event=>{
   joystickPointerId=event.pointerId;
   try{joystick.setPointerCapture(event.pointerId)}catch{}
   updateJoystick(event);
+  haptic(5);
   focusGameCanvas();
 },{passive:false});
 joystick.addEventListener("pointermove",event=>{
@@ -248,6 +209,7 @@ joystick.addEventListener("pointermove",event=>{
 window.addEventListener("blur",()=>{
   for(const button of activeTouchPointers.values()) setTouchKey(button,false);
   activeTouchPointers.clear();
+  touchKeyUsers.clear();
   resetJoystick();
 });
 
@@ -433,9 +395,18 @@ const fullscreenButton=document.querySelector("#fullscreen");
 fullscreenButton.addEventListener("click",async()=>{
   const target=document.querySelector(".game");
   try{
-    if(!document.fullscreenElement && target.requestFullscreen) await target.requestFullscreen();
-    else if(document.fullscreenElement && document.exitFullscreen) await document.exitFullscreen();
+    if(!document.fullscreenElement){
+      const request=target.requestFullscreen?.bind(target) || document.documentElement.requestFullscreen?.bind(document.documentElement);
+      if(request) await request({navigationUI:"hide"}).catch(()=>request());
+    }else if(document.exitFullscreen){
+      await document.exitFullscreen();
+    }
+    requestAnimationFrame(()=>window.dispatchEvent(new Event("resize")));
   }catch(error){appendLog("Fullscreen unavailable: "+error.message)}
+});
+
+document.addEventListener("fullscreenchange",()=>{
+  fullscreenButton.textContent=document.fullscreenElement?"Exit fullscreen":"Fullscreen";
 });
 
 if(!document.fullscreenEnabled && !document.querySelector(".game").requestFullscreen){
@@ -445,10 +416,26 @@ if(!document.fullscreenEnabled && !document.querySelector(".game").requestFullsc
 const landscapeButton=document.querySelector("#landscape");
 landscapeButton.addEventListener("click",async()=>{
   try{
-    if(screen.orientation?.lock) await screen.orientation.lock("landscape");
-    else appendLog("Landscape locking is not supported by this browser.");
-  }catch(error){appendLog("Landscape lock is unavailable; rotate the device manually.")}
+    if(screen.orientation?.lock){
+      await screen.orientation.lock("landscape");
+      landscapeButton.textContent="Landscape ✓";
+    }else{
+      appendLog("Landscape locking is not supported by this browser.");
+    }
+  }catch(error){
+    appendLog("Landscape lock is unavailable; rotate the device manually.");
+  }
 });
+
+function syncTouchMode(){
+  const coarse=matchMedia("(pointer:coarse)").matches;
+  const landscape=matchMedia("(orientation:landscape)").matches;
+  document.body.dataset.touchMode=coarse?"touch":"pointer";
+  document.body.dataset.orientation=landscape?"landscape":"portrait";
+}
+syncTouchMode();
+window.addEventListener("resize",syncTouchMode,{passive:true});
+window.addEventListener("orientationchange",()=>setTimeout(syncTouchMode,80),{passive:true});
 
 canvas.addEventListener("touchstart",event=>{
   event.preventDefault();
